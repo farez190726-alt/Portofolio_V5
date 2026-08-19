@@ -79,9 +79,9 @@ const PAUSE_DURATION = 2000;
 const WORDS = ["Software Engineering Student", "Tech Enthusiast"];
 const TECH_STACK = ["React", "Javascript", "Node.js", "Tailwind"];
 const SOCIAL_LINKS = [
-  { icon: Github, link: "https://github.com/EkiZR", label: "GitHub Profile" },
-  { icon: Linkedin, link: "https://www.linkedin.com/in/ekizr/", label: "LinkedIn Profile" },
-  { icon: Instagram, link: "https://www.instagram.com/ekizr_/?hl=id", label: "Instagram Profile" }
+  { icon: Github, link: "https://github.com/Frsgaming543", label: "GitHub Profile" },
+  { icon: Linkedin, link: "https://www.linkedin.com/in/muhammad-farez-nabil-chosy-276043314/", label: "LinkedIn Profile" },
+  { icon: Instagram, link: "https://www.instagram.com/class_programmerr/", label: "Instagram Profile" }
 ];
 
 const Home = () => {
@@ -143,10 +143,10 @@ const Home = () => {
         <title>Muhammad Farez Nabil Chosy — Mahasiswa Teknologi Rekayasa Perangkat Lunak</title>
         <meta name="description" content="Website portofolio resmi Muhammad Farez Nabil Chosy (Farez), mahasiswa Teknik Informatika program studi Teknologi Rekayasa Perangkat Lunak." />
      <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="https://ekizr.com" />
+        <link rel="canonical" href="https://portofolio-v5-a2qts6vro-farez190726-alts-projects.vercel.app/" />
         <meta property="og:title" content="Muhammad Farez Nabil Chosy — Mahasiswa Teknologi Rekayasa Perangkat Lunak" />
      <meta property="og:description" content="Website portofolio resmi Muhammad Farez Nabil Chosy (Farez), mahasiswa Teknologi Rekayasa Perangkat Lunak." />
-        <meta property="og:url" content="https://ekizr.com" />
+        <meta property="og:url" content="https://portofolio-v5-a2qts6vro-farez190726-alts-projects.vercel.app/" />
         <meta property="og:type" content="website" />
         <script type="application/ld+json">{`
           {
@@ -154,11 +154,11 @@ const Home = () => {
             "@type": "Person",
             "name": "Muhammad Farez Nabil Chosy",
             "jobTitle": "Mahasiswa Teknologi Rekayasa Perangkat Lunak",
-            "url": "https://ekizr.com",
+            "url": "https://portofolio-v5-a2qts6vro-farez190726-alts-projects.vercel.app/",
             "sameAs": [
-              "https://github.com/EkiZR",
-              "https://www.linkedin.com/in/ekizr/",
-              "https://www.instagram.com/ekizr_/"
+              "https://github.com/Frsgaming543",
+              "https://www.linkedin.com/in/muhammad-farez-nabil-chosy-276043314/",
+              "https://www.instagram.com/class_programmerr/"
             ]
           }
         `}</script>
