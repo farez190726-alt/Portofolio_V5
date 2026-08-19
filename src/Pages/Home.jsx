@@ -76,7 +76,7 @@ const SocialLink = memo(({ icon: Icon, link, label }) => (
 const TYPING_SPEED = 100;
 const ERASING_SPEED = 50;
 const PAUSE_DURATION = 2000;
-const WORDS = ["Network & Telecom Student", "Tech Enthusiast"];
+const WORDS = ["Software Engineering Student", "Tech Enthusiast"];
 const TECH_STACK = ["React", "Javascript", "Node.js", "Tailwind"];
 const SOCIAL_LINKS = [
   { icon: Github, link: "https://github.com/EkiZR", label: "GitHub Profile" },
@@ -140,20 +140,20 @@ const Home = () => {
   return (
     <>
       <Helmet>
-        <title>Eki Zulfar Rachman — Frontend Web Developer</title>
-        <meta name="description" content="Website resmi Eki Zulfar Rachman, Front-End Web Developer. Saya berfokus pada penciptaan pengalaman digital yang menarik dan selalu berupaya memberikan solusi terbaik dalam setiap proyek yang saya kerjakan." />
+        <title>Muhammad Farez Nabil Chosy — Mahasiswa Teknologi Rekayasa Perangkat Lunak</title>
+        <meta name="description" content="Website portofolio resmi Muhammad Farez Nabil Chosy (Farez), mahasiswa Teknik Informatika program studi Teknologi Rekayasa Perangkat Lunak." />
      <meta name="robots" content="index, follow" />
         <link rel="canonical" href="https://ekizr.com" />
-        <meta property="og:title" content="Eki Zulfar Rachman — Frontend Web Developer" />
-     <meta property="og:description" content="Website resmi dan portofolio Eki Zulfar Rachman, Front-End Web Developer." />
+        <meta property="og:title" content="Muhammad Farez Nabil Chosy — Mahasiswa Teknologi Rekayasa Perangkat Lunak" />
+     <meta property="og:description" content="Website portofolio resmi Muhammad Farez Nabil Chosy (Farez), mahasiswa Teknologi Rekayasa Perangkat Lunak." />
         <meta property="og:url" content="https://ekizr.com" />
         <meta property="og:type" content="website" />
         <script type="application/ld+json">{`
           {
             "@context": "https://schema.org",
             "@type": "Person",
-            "name": "Eki Zulfar Rachman",
-            "jobTitle": "Frontend Developer",
+            "name": "Muhammad Farez Nabil Chosy",
+            "jobTitle": "Mahasiswa Teknologi Rekayasa Perangkat Lunak",
             "url": "https://ekizr.com",
             "sameAs": [
               "https://github.com/EkiZR",

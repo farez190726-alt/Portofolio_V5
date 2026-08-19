@@ -238,8 +238,8 @@ const AboutPage = () => {
               data-aos="fade-right"
               data-aos-duration="1500"
             >
-        Saya adalah mahasiswa program studi Teknologi Rekayasa Perangkat Lunak, jurusan Teknik Informatika, dengan nim 26555011018, dari jakarta utara asal sekolah SMK Muhammadiyah 12 jkarta, kelompok integer no. peserta 034 yang berfokus pada pengembangan Front-End. 
-Saya berfokus pada penciptaan pengalaman digital yang menarik dan selalu berupaya memberikan solusi terbaik dalam setiap proyek yang saya kerjakan.
+        Saya adalah mahasiswa program studi Teknologi Rekayasa Perangkat Lunak, jurusan Teknik Informatika, dengan NIM 2655011018, tergabung dalam Kelompok Integer nomor peserta 034. Biasa dipanggil Farez, hobi saya adalah ngoding dan running.
+Alasan saya masuk ke program studi ini karena sejak SMP saya sudah memiliki minat di bidang teknologi, khususnya Teknologi Rekayasa Perangkat Lunak (TRPL). Cita-cita saya adalah menjadi seorang penemu teknologi baru dan memiliki 5 perusahaan besar di bidang teknologi.
                   </p>
 
                {/* Quote Section */}
