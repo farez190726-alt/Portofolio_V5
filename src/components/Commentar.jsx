@@ -333,7 +333,7 @@ const Komentar = () => {
         
         try {
             const profileImageUrl = await uploadImage(imageFile);
-            
+
             const { error } = await supabase
                 .from('portfolio_comments')
                 .insert([
@@ -350,8 +350,22 @@ const Komentar = () => {
                 throw error;
             }
         } catch (error) {
-            setError('Failed to post comment. Please try again.');
-            console.error('Error adding comment: ', error);
+            // Surface the real Supabase error instead of a generic message,
+            // so the actual cause (RLS policy, missing bucket, bad env vars, etc.)
+            // is visible instead of being swallowed.
+            const message =
+                error?.message ||
+                error?.error_description ||
+                (typeof error === 'string' ? error : null) ||
+                'Failed to post comment. Please try again.';
+            setError(message);
+            console.error('Error adding comment:', {
+                message: error?.message,
+                details: error?.details,
+                hint: error?.hint,
+                code: error?.code,
+                raw: error,
+            });
         } finally {
             setIsSubmitting(false);
         }
