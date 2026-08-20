@@ -81,7 +81,7 @@ const TECH_STACK = ["React", "Javascript", "Node.js", "Tailwind"];
 const SOCIAL_LINKS = [
   { icon: Github, link: "https://github.com/Frsgaming543", label: "GitHub Profile" },
   { icon: Linkedin, link: "https://www.linkedin.com/in/muhammad-farez-nabil-chosy-276043314/", label: "LinkedIn Profile" },
-  { icon: Instagram, link: "https://www.instagram.com/class_programmerr/", label: "Instagram Profile" }
+  { icon: Instagram, link: "https://www.instagram.com/class_programmer/", label: "Instagram Profile" }
 ];
 
 const Home = () => {
@@ -158,7 +158,7 @@ const Home = () => {
             "sameAs": [
               "https://github.com/Frsgaming543",
               "https://www.linkedin.com/in/muhammad-farez-nabil-chosy-276043314/",
-              "https://www.instagram.com/class_programmerr/"
+              "https://www.instagram.com/class_programmer/"
             ]
           }
         `}</script>
