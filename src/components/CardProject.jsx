@@ -1,9 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { ExternalLink, ArrowRight } from "lucide-react";
+import { ExternalLink, ArrowRight, Images } from "lucide-react";
 import { toSlug } from "../utils/slug";
 
-const CardProject = ({ Img, Title, Description, Link: ProjectLink, id }) => {
+const CardProject = ({ Img, Title, Description, Link: ProjectLink, id, GalleryCount = 0 }) => {
   const handleLiveDemo = (e) => {
     if (!ProjectLink) {
       console.log("ProjectLink kosong");
@@ -32,6 +32,11 @@ const CardProject = ({ Img, Title, Description, Link: ProjectLink, id }) => {
               alt={Title}
               className="w-full h-full object-cover aspect-[16/8] transform group-hover:scale-105 transition-transform duration-500"
             />
+            {GalleryCount > 0 && (
+              <span className="absolute bottom-2 right-2 flex items-center gap-1 px-2 py-1 rounded-full bg-black/60 backdrop-blur-sm text-[11px] text-white/90 border border-white/10">
+                <Images className="w-3 h-3" /> +{GalleryCount}
+              </span>
+            )}
           </div>
 
           <div className="mt-4 space-y-3">

@@ -3,7 +3,7 @@ import { Modal, IconButton, Box, Fade, Backdrop, Zoom, Typography } from "@mui/m
 import CloseIcon from "@mui/icons-material/Close"
 import FullscreenIcon from "@mui/icons-material/Fullscreen"
 
-const Certificate = ({ ImgSertif }) => {
+const Certificate = ({ ImgSertif, Title }) => {
 	const [open, setOpen] = useState(false)
 
 	const handleOpen = () => {
@@ -58,7 +58,7 @@ const Certificate = ({ ImgSertif }) => {
 					<img
 						className="certificate-image"
 						src={ImgSertif}
-						alt="Certificate"
+						alt={Title || "Certificate"}
 						style={{
 							width: "100%",
 							height: "auto",
@@ -113,8 +113,9 @@ const Certificate = ({ ImgSertif }) => {
 							sx={{
 								fontWeight: 600,
 								textShadow: "0 2px 4px rgba(0,0,0,0.3)",
+								px: 2,
 							}}>
-							View Certificate
+							{Title || "View Certificate"}
 						</Typography>
 					</Box>
 				</Box>
@@ -180,15 +181,27 @@ const Certificate = ({ ImgSertif }) => {
 					{/* Modal Image */}
 					<img
 						src={ImgSertif}
-						alt="Certificate Full View"
+						alt={Title ? `${Title} — Full View` : "Certificate Full View"}
 						style={{
 							display: "block",
 							maxWidth: "100%",
-							maxHeight: "90vh",
+							maxHeight: Title ? "82vh" : "90vh",
 							margin: "0 auto",
 							objectFit: "contain",
 						}}
 					/>
+					{Title && (
+						<Typography
+							sx={{
+								color: "white",
+								textAlign: "center",
+								mt: 1.5,
+								fontWeight: 500,
+								textShadow: "0 2px 4px rgba(0,0,0,0.4)",
+							}}>
+							{Title}
+						</Typography>
+					)}
 				</Box>
 			</Modal>
 		</Box>

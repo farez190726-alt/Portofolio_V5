@@ -1,6 +1,42 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { supabase } from "../../supabase";
-import { Award, Upload, Trash2, ImageIcon, Plus } from 'lucide-react'
+import Swal from 'sweetalert2'
+import { Award, Upload, Trash2, ImageIcon, Plus, Search, X } from 'lucide-react'
+import {
+  uploadImageToBucket,
+  deleteImagesFromBucket,
+  validateImageFile,
+} from '../../utils/imageStorage'
+
+const BUCKET = 'certificate-images'
+
+const swalDark = {
+  background: '#0a0a1a',
+  color: '#e5e7eb',
+  confirmButtonColor: '#6366f1',
+  cancelButtonColor: 'rgba(255,255,255,0.1)',
+}
+
+const toast = Swal.mixin({
+  toast: true,
+  position: 'top-end',
+  showConfirmButton: false,
+  timer: 2500,
+  timerProgressBar: true,
+  ...swalDark,
+})
+
+const confirmDelete = (text) =>
+  Swal.fire({
+    title: 'Are you sure?',
+    text,
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Yes, delete it',
+    cancelButtonText: 'Cancel',
+    reverseButtons: true,
+    ...swalDark,
+  })
 
 const Card = ({ children, className = '' }) => (
   <div className={`relative group ${className}`}>
@@ -33,14 +69,17 @@ const CertCard = ({ cert, onDelete }) => {
         )}
         <img
           src={cert.Img}
-          alt="Certificate"
+          alt={cert.Title || 'Certificate'}
           onLoad={() => setImgLoaded(true)}
           className={`w-full aspect-[16/11.5] object-cover group-hover:scale-105 transition-transform duration-500 ${imgLoaded ? 'block' : 'hidden'}`}
         />
         {imgLoaded && (
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3">
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-3 gap-2">
+            {cert.Title && (
+              <p className="text-xs text-white/90 font-medium line-clamp-2">{cert.Title}</p>
+            )}
             <button
-              onClick={() => onDelete(cert.id)}
+              onClick={() => onDelete(cert)}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-500/20 border border-red-500/30 text-red-300 text-xs w-full justify-center hover:bg-red-500/30 transition-colors"
             >
               <Trash2 className="w-3 h-3" /> Delete
@@ -54,106 +93,197 @@ const CertCard = ({ cert, onDelete }) => {
 
 export default function Certificates() {
   const [certs, setCerts] = useState([])
-  const [file, setFile] = useState(null)
-  const [preview, setPreview] = useState(null)
+  const [pending, setPending] = useState([]) // [{id, file, preview, title}]
   const [uploading, setUploading] = useState(false)
+  const [progress, setProgress] = useState(null) // {done, total}
   const [dragOver, setDragOver] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [search, setSearch] = useState('')
 
   const fetchCerts = async () => {
     setLoading(true)
-    const { data } = await supabase.from('certificates').select('*').order('created_at', { ascending: false })
+    const { data, error } = await supabase.from('certificates').select('*').order('created_at', { ascending: false })
+    if (error) toast.fire({ icon: 'error', title: 'Failed to load certificates' })
     setCerts(data || [])
     setLoading(false)
   }
 
   useEffect(() => { fetchCerts() }, [])
 
-  const handleFile = (f) => {
-    if (!f) return
-    setFile(f)
-    setPreview(URL.createObjectURL(f))
+  const filteredCerts = useMemo(() => {
+    const q = search.trim().toLowerCase()
+    if (!q) return certs
+    return certs.filter((c) => (c.Title || '').toLowerCase().includes(q))
+  }, [certs, search])
+
+  const handleFiles = (fileList) => {
+    const files = Array.from(fileList || [])
+    if (files.length === 0) return
+    const accepted = []
+    for (const f of files) {
+      const check = validateImageFile(f)
+      if (!check.valid) {
+        toast.fire({ icon: 'error', title: `${f.name}: ${check.error}` })
+        continue
+      }
+      accepted.push({
+        id: `${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+        file: f,
+        preview: URL.createObjectURL(f),
+        title: '',
+      })
+    }
+    setPending((prev) => [...prev, ...accepted])
   }
 
-  const uploadImage = async () => {
-    if (!file) return
+  const removePending = (id) => setPending((prev) => prev.filter((p) => p.id !== id))
+  const setPendingTitle = (id, title) =>
+    setPending((prev) => prev.map((p) => (p.id === id ? { ...p, title } : p)))
+
+  const uploadAll = async () => {
+    if (pending.length === 0) return
     setUploading(true)
-    const fileName = `cert-${Date.now()}-${file.name}`
-    await supabase.storage.from('certificate-images').upload(fileName, file)
-    const { data } = supabase.storage.from('certificate-images').getPublicUrl(fileName)
-    await supabase.from('certificates').insert({ Img: data.publicUrl })
-    setFile(null); setPreview(null); setUploading(false)
+    setProgress({ done: 0, total: pending.length })
+    let succeeded = 0
+
+    for (let i = 0; i < pending.length; i++) {
+      const item = pending[i]
+      try {
+        const url = await uploadImageToBucket(BUCKET, item.file, { prefix: 'cert-' })
+        const { error } = await supabase
+          .from('certificates')
+          .insert({ Img: url, Title: item.title || null })
+        if (error) throw error
+        succeeded += 1
+      } catch (err) {
+        toast.fire({ icon: 'error', title: `${item.file.name}: ${err.message || 'upload failed'}` })
+      }
+      setProgress({ done: i + 1, total: pending.length })
+    }
+
+    setPending([])
+    setUploading(false)
+    setProgress(null)
+    if (succeeded > 0) {
+      toast.fire({ icon: 'success', title: `${succeeded} certificate${succeeded > 1 ? 's' : ''} uploaded` })
+    }
     fetchCerts()
   }
 
-  const deleteCert = async (id) => {
-    if (!confirm('Delete this certificate?')) return
-    await supabase.from('certificates').delete().eq('id', id)
+  const deleteCert = async (cert) => {
+    const result = await confirmDelete('This certificate will be permanently deleted.')
+    if (!result.isConfirmed) return
+
+    const { error } = await supabase.from('certificates').delete().eq('id', cert.id)
+    if (error) {
+      toast.fire({ icon: 'error', title: 'Failed to delete certificate' })
+      return
+    }
+    if (cert.Img) deleteImagesFromBucket(BUCKET, [cert.Img])
+    toast.fire({ icon: 'success', title: 'Certificate deleted' })
     fetchCerts()
   }
 
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center gap-3">
-        <div className="relative">
-          <div className="absolute -inset-0.5 bg-gradient-to-r from-[#6366f1] to-[#a855f7] rounded-xl blur opacity-50" />
-          <div className="relative w-9 h-9 bg-[#030014] rounded-xl border border-white/15 flex items-center justify-center">
-            <Award className="w-4 h-4 text-indigo-400" />
+      <div className="flex items-center justify-between gap-4 flex-wrap">
+        <div className="flex items-center gap-3">
+          <div className="relative">
+            <div className="absolute -inset-0.5 bg-gradient-to-r from-[#6366f1] to-[#a855f7] rounded-xl blur opacity-50" />
+            <div className="relative w-9 h-9 bg-[#030014] rounded-xl border border-white/15 flex items-center justify-center">
+              <Award className="w-4 h-4 text-indigo-400" />
+            </div>
+          </div>
+          <div>
+            <h1 className="text-xl sm:text-2xl font-bold text-white">Certificates</h1>
+            <p className="text-gray-500 text-xs">
+              {loading ? 'Loading...' : `${filteredCerts.length} of ${certs.length} certificates`}
+            </p>
           </div>
         </div>
-        <div>
-          <h1 className="text-xl sm:text-2xl font-bold text-white">Certificates</h1>
-          <p className="text-gray-500 text-xs">
-            {loading ? 'Loading...' : `${certs.length} certificates total`}
-          </p>
-        </div>
+      </div>
+
+      {/* Search */}
+      <div className="relative max-w-sm">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-600" />
+        <input
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search certificates..."
+          className="w-full bg-white/5 border border-white/10 rounded-xl pl-9 pr-3 py-2 text-sm text-gray-200 placeholder-gray-600 outline-none focus:border-indigo-500/60 focus:ring-1 focus:ring-indigo-500/20 transition-all"
+        />
       </div>
 
       {/* Upload Card */}
       <Card>
         <div className="p-5 sm:p-6 space-y-4">
           <h2 className="text-sm font-semibold text-white flex items-center gap-2">
-            <Plus className="w-4 h-4 text-indigo-400" /> Upload Certificate
+            <Plus className="w-4 h-4 text-indigo-400" /> Upload Certificates
           </h2>
 
           <label
             onDragOver={e => { e.preventDefault(); setDragOver(true) }}
             onDragLeave={() => setDragOver(false)}
-            onDrop={e => { e.preventDefault(); setDragOver(false); handleFile(e.dataTransfer.files[0]) }}
+            onDrop={e => { e.preventDefault(); setDragOver(false); handleFiles(e.dataTransfer.files) }}
             className={`flex flex-col items-center justify-center w-full min-h-[160px] rounded-xl border-2 border-dashed cursor-pointer transition-all duration-300 ${
               dragOver ? 'border-indigo-400/60 bg-indigo-500/10' : 'border-white/12 bg-white/4 hover:border-indigo-500/35 hover:bg-white/7'
             }`}
           >
-            {preview ? (
-              <img src={preview} alt="preview" className="max-h-40 object-contain rounded-lg p-2" />
-            ) : (
-              <div className="text-center space-y-2 p-6">
-                <div className="w-11 h-11 rounded-full bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center mx-auto">
-                  <ImageIcon className="w-5 h-5 text-indigo-400" />
-                </div>
-                <p className="text-sm text-gray-300">Drag & drop or click to upload</p>
-                <p className="text-xs text-gray-600">PNG, JPG, WEBP supported</p>
+            <div className="text-center space-y-2 p-6">
+              <div className="w-11 h-11 rounded-full bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center mx-auto">
+                <ImageIcon className="w-5 h-5 text-indigo-400" />
               </div>
-            )}
-            <input type="file" accept="image/*" onChange={e => handleFile(e.target.files[0])} className="hidden" />
+              <p className="text-sm text-gray-300">Drag & drop or click to upload</p>
+              <p className="text-xs text-gray-600">Multiple files supported · PNG, JPG, WEBP, max 8MB each</p>
+            </div>
+            <input type="file" accept="image/*" multiple onChange={e => { handleFiles(e.target.files); e.target.value = '' }} className="hidden" />
           </label>
 
-          {file && (
-            <div className="flex items-center justify-between gap-3 flex-wrap">
-              <p className="text-xs text-gray-400 truncate flex-1">{file.name}</p>
-              <div className="flex gap-2 shrink-0">
-                <button onClick={() => { setFile(null); setPreview(null) }}
-                  className="px-3 py-1.5 rounded-xl border border-white/10 text-gray-500 hover:text-white text-xs transition-colors">
-                  Clear
-                </button>
-                <button onClick={uploadImage} disabled={uploading} className="relative group/u">
-                  <div className="absolute -inset-0.5 bg-gradient-to-r from-[#4f52c9] to-[#8644c5] rounded-xl opacity-60 blur group-hover/u:opacity-100 transition duration-300" />
-                  <div className="relative flex items-center gap-2 px-4 py-1.5 bg-[#030014] rounded-xl border border-white/10">
-                    {uploading ? <div className="w-3.5 h-3.5 border-2 border-white/20 border-t-white rounded-full animate-spin" /> : <Upload className="w-3.5 h-3.5 text-indigo-400" />}
-                    <span className="text-xs text-gray-200">{uploading ? 'Uploading...' : 'Upload'}</span>
+          {pending.length > 0 && (
+            <div className="space-y-3">
+              <div className="flex flex-wrap gap-3">
+                {pending.map((item) => (
+                  <div key={item.id} className="relative w-28 space-y-1.5">
+                    <div className="relative rounded-lg overflow-hidden border border-white/10">
+                      <img src={item.preview} alt="preview" className="w-full aspect-[16/11.5] object-cover" />
+                      <button
+                        type="button"
+                        onClick={() => removePending(item.id)}
+                        className="absolute top-1 right-1 p-0.5 rounded bg-black/60 hover:bg-black/80 text-white"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </div>
+                    <input
+                      value={item.title}
+                      onChange={(e) => setPendingTitle(item.id, e.target.value)}
+                      placeholder="Title (optional)"
+                      className="w-full bg-[#0d0d22] border border-white/10 rounded-lg px-2 py-1 text-[11px] text-gray-300 placeholder-gray-600 outline-none focus:border-indigo-500/60"
+                    />
                   </div>
-                </button>
+                ))}
+              </div>
+
+              <div className="flex items-center justify-between gap-3 flex-wrap">
+                <p className="text-xs text-gray-500">
+                  {pending.length} file{pending.length > 1 ? 's' : ''} ready to upload
+                </p>
+                <div className="flex gap-2 shrink-0">
+                  <button onClick={() => setPending([])} disabled={uploading}
+                    className="px-3 py-1.5 rounded-xl border border-white/10 text-gray-500 hover:text-white text-xs transition-colors disabled:opacity-40">
+                    Clear
+                  </button>
+                  <button onClick={uploadAll} disabled={uploading} className="relative group/u">
+                    <div className="absolute -inset-0.5 bg-gradient-to-r from-[#4f52c9] to-[#8644c5] rounded-xl opacity-60 blur group-hover/u:opacity-100 transition duration-300" />
+                    <div className="relative flex items-center gap-2 px-4 py-1.5 bg-[#030014] rounded-xl border border-white/10">
+                      {uploading ? <div className="w-3.5 h-3.5 border-2 border-white/20 border-t-white rounded-full animate-spin" /> : <Upload className="w-3.5 h-3.5 text-indigo-400" />}
+                      <span className="text-xs text-gray-200">
+                        {uploading ? `Uploading ${progress?.done ?? 0}/${progress?.total ?? pending.length}...` : 'Upload all'}
+                      </span>
+                    </div>
+                  </button>
+                </div>
               </div>
             </div>
           )}
@@ -167,16 +297,18 @@ export default function Certificates() {
             <SkeletonCard key={i} />
           ))}
         </div>
-      ) : certs.length === 0 ? (
+      ) : filteredCerts.length === 0 ? (
         <Card>
           <div className="p-16 text-center">
             <Award className="w-10 h-10 text-gray-700 mx-auto mb-3" />
-            <p className="text-gray-500 text-sm">No certificates yet.</p>
+            <p className="text-gray-500 text-sm">
+              {certs.length === 0 ? 'No certificates yet.' : 'No certificates match your search.'}
+            </p>
           </div>
         </Card>
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
-          {certs.map(cert => (
+          {filteredCerts.map(cert => (
             <CertCard key={cert.id} cert={cert} onDelete={deleteCert} />
           ))}
         </div>

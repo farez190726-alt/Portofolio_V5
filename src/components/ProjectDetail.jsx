@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { Helmet } from "react-helmet-async";
 import { useParams, useNavigate } from "react-router-dom";
 import {
@@ -14,9 +14,12 @@ import {
   Package,
   Cpu,
   Code,
+  Expand,
+  Images,
 } from "lucide-react";
 import Swal from "sweetalert2";
 import { toSlug } from "../utils/slug";
+import ImageLightbox from "./ImageLightbox";
 
 const TECH_ICONS = {
   React: Globe,
@@ -118,11 +121,88 @@ const handleGithubClick = (githubLink) => {
   return true;
 };
 
+const ProjectGallery = ({ images, title }) => {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [imgLoaded, setImgLoaded] = useState(false);
+
+  useEffect(() => {
+    setImgLoaded(false);
+  }, [activeIndex]);
+
+  if (images.length === 0) return null;
+
+  return (
+    <div className="space-y-3">
+      <div
+        className="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl group cursor-zoom-in bg-white/5"
+        onClick={() => setLightboxOpen(true)}
+      >
+        <div className="absolute inset-0 bg-gradient-to-t from-[#030014] via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10 pointer-events-none" />
+        {!imgLoaded && (
+          <div className="w-full aspect-[16/10] animate-pulse bg-white/5" />
+        )}
+        <img
+          src={images[activeIndex]}
+          alt={`${title} screenshot ${activeIndex + 1}`}
+          onLoad={() => setImgLoaded(true)}
+          className={`w-full object-cover transform transition-transform duration-700 will-change-transform group-hover:scale-105 ${imgLoaded ? "opacity-100" : "opacity-0 absolute"}`}
+        />
+        <div className="absolute inset-0 border-2 border-white/0 group-hover:border-white/10 transition-colors duration-300 rounded-2xl pointer-events-none" />
+        <div className="absolute bottom-3 right-3 z-10 flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-black/50 backdrop-blur-sm text-white/80 text-xs opacity-0 group-hover:opacity-100 transition-opacity">
+          <Expand className="w-3.5 h-3.5" />
+          <span>View fullscreen</span>
+        </div>
+        {images.length > 1 && (
+          <div className="absolute top-3 left-3 z-10 flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-black/50 backdrop-blur-sm text-white/80 text-xs">
+            <Images className="w-3.5 h-3.5" />
+            <span>{activeIndex + 1} / {images.length}</span>
+          </div>
+        )}
+      </div>
+
+      {images.length > 1 && (
+        <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-thin">
+          {images.map((img, i) => (
+            <button
+              key={img + i}
+              onClick={() => setActiveIndex(i)}
+              className={`shrink-0 w-16 h-16 md:w-20 md:h-20 rounded-lg overflow-hidden border-2 transition-all ${
+                i === activeIndex
+                  ? "border-purple-400 opacity-100"
+                  : "border-white/10 opacity-60 hover:opacity-100 hover:border-white/30"
+              }`}
+            >
+              <img src={img} alt={`${title} thumbnail ${i + 1}`} className="w-full h-full object-cover" />
+            </button>
+          ))}
+        </div>
+      )}
+
+      {lightboxOpen && (
+        <ImageLightbox
+          images={images}
+          index={activeIndex}
+          onClose={() => setLightboxOpen(false)}
+          onIndexChange={setActiveIndex}
+        />
+      )}
+    </div>
+  );
+};
+
 const ProjectDetails = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
   const [project, setProject] = useState(null);
-  const [isImageLoaded, setIsImageLoaded] = useState(false);
+
+  const galleryImages = useMemo(() => {
+    if (!project) return [];
+    const gallery = Array.isArray(project.Gallery) ? project.Gallery.filter(Boolean) : [];
+    const combined = project.Img ? [project.Img, ...gallery] : gallery;
+    // De-dupe while preserving order (cover image might also appear in gallery)
+    return [...new Set(combined)];
+  }, [project]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -293,16 +373,7 @@ const ProjectDetails = () => {
               </div>
 
               <div className="space-y-6 md:space-y-10 animate-slideInRight">
-                <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-2xl group">
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#030014] via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                  <img
-                    src={project.Img}
-                    alt={project.Title}
-                    className="w-full object-cover transform transition-transform duration-700 will-change-transform group-hover:scale-105"
-                    onLoad={() => setIsImageLoaded(true)}
-                  />
-                  <div className="absolute inset-0 border-2 border-white/0 group-hover:border-white/10 transition-colors duration-300 rounded-2xl" />
-                </div>
+                <ProjectGallery images={galleryImages} title={project.Title} />
 
                 <div className="bg-white/[0.02] backdrop-blur-xl rounded-2xl p-8 border border-white/10 space-y-6 hover:border-white/20 transition-colors duration-300 group">
                   <h3 className="text-xl font-semibold text-white/90 flex items-center gap-3">
