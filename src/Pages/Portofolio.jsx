@@ -15,7 +15,8 @@ import TechStackIcon from "../components/TechStackIcon";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import Certificate from "../components/Certificate";
-import { Code, Award, Boxes } from "lucide-react";
+import PhotoGallery from "../components/PhotoGallery";
+import { Code, Award, Boxes, Camera } from "lucide-react";
 
 
 const ToggleButton = ({ onClick, isShowingMore }) => (
@@ -297,9 +298,14 @@ export default function FullWidthTabs() {
               {...a11yProps(1)}
             />
             <Tab
+              icon={<Camera className="mb-2 w-5 h-5 transition-all duration-300" />}
+              label="Gallery"
+              {...a11yProps(2)}
+            />
+            <Tab
               icon={<Boxes className="mb-2 w-5 h-5 transition-all duration-300" />}
               label="Tech Stack"
-              {...a11yProps(2)}
+              {...a11yProps(3)}
             />
           </Tabs>
         </AppBar>
@@ -365,6 +371,12 @@ export default function FullWidthTabs() {
           </TabPanel>
 
           <TabPanel value={value} index={2} dir={theme.direction}>
+            <div className="container mx-auto overflow-hidden">
+              <PhotoGallery />
+            </div>
+          </TabPanel>
+
+          <TabPanel value={value} index={3} dir={theme.direction}>
             <div className="container mx-auto flex justify-center items-center overflow-hidden pb-[5%]">
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 lg:gap-8 gap-5">
                 {techStacks.map((stack, index) => (

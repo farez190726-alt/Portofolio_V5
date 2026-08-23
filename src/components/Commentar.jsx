@@ -1,16 +1,136 @@
-import React, { useState, useEffect, useRef, useCallback, memo } from 'react';
-import { createClient } from '@supabase/supabase-js';
-import { MessageCircle, UserCircle2, Loader2, AlertCircle, Send, ImagePlus, X, Pin } from 'lucide-react';
+import React, { useState, useEffect, useRef, useCallback, useMemo, memo } from 'react';
+import { MessageCircle, UserCircle2, Loader2, AlertCircle, Send, ImagePlus, X, Pin, Flame } from 'lucide-react';
+import { AnimatePresence, motion } from 'framer-motion';
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { supabase } from '../supabase';
+import { getVisitorId } from '../utils/visitorId';
 
+// Available reactions, in display order. "like" is the quick-tap default;
+// the rest appear in the hover/tap picker, Facebook-style.
+const REACTIONS = [
+  { key: 'like', emoji: '👍', label: 'Like' },
+  { key: 'love', emoji: '❤️', label: 'Love' },
+  { key: 'haha', emoji: '😂', label: 'Haha' },
+  { key: 'wow', emoji: '😮', label: 'Wow' },
+  { key: 'sad', emoji: '😢', label: 'Sad' },
+  { key: 'fire', emoji: '🔥', label: 'Fire' },
+];
+const REACTION_MAP = Object.fromEntries(REACTIONS.map((r) => [r.key, r]));
 
-const Comment = memo(({ comment, formatDate, index, isPinned = false }) => (
-    <div 
+// ------------------------------------------------------------------
+// Reaction bar: quick-tap Like + hover/tap picker + grouped counts
+// ------------------------------------------------------------------
+const ReactionBar = memo(({ commentId, summary, myReaction, onReact }) => {
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const closeTimer = useRef(null);
+
+  const openPicker = () => {
+    clearTimeout(closeTimer.current);
+    setPickerOpen(true);
+  };
+  const scheduleClose = () => {
+    closeTimer.current = setTimeout(() => setPickerOpen(false), 350);
+  };
+
+  const totalCount = useMemo(
+    () => Object.values(summary).reduce((a, b) => a + b, 0),
+    [summary]
+  );
+
+  const topReactions = useMemo(
+    () =>
+      Object.entries(summary)
+        .filter(([, count]) => count > 0)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 3)
+        .map(([key]) => key),
+    [summary]
+  );
+
+  const handleQuickTap = () => {
+    onReact(commentId, myReaction ? null : 'like');
+  };
+
+  return (
+    <div className="flex items-center gap-3 mt-2 relative">
+      <div
+        className="relative"
+        onMouseEnter={openPicker}
+        onMouseLeave={scheduleClose}
+      >
+        <button
+          onClick={handleQuickTap}
+          onTouchStart={openPicker}
+          className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium transition-all border ${
+            myReaction
+              ? 'bg-indigo-500/15 border-indigo-500/30 text-indigo-300'
+              : 'border-transparent text-gray-400 hover:text-gray-200 hover:bg-white/5'
+          }`}
+        >
+          <span className="text-sm leading-none">
+            {myReaction ? REACTION_MAP[myReaction]?.emoji : '👍'}
+          </span>
+          {myReaction ? REACTION_MAP[myReaction]?.label : 'Like'}
+        </button>
+
+        {/* Emoji picker */}
+        <AnimatePresence>
+          {pickerOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: 6, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 6, scale: 0.9 }}
+              transition={{ duration: 0.15 }}
+              onMouseEnter={openPicker}
+              onMouseLeave={scheduleClose}
+              className="absolute bottom-full left-0 mb-2 flex items-center gap-1 px-2 py-1.5 rounded-full bg-[#0d0d22] border border-white/10 shadow-xl z-20"
+            >
+              {REACTIONS.map((r) => (
+                <button
+                  key={r.key}
+                  title={r.label}
+                  onClick={() => {
+                    onReact(commentId, myReaction === r.key ? null : r.key);
+                    setPickerOpen(false);
+                  }}
+                  className={`text-lg leading-none p-1.5 rounded-full transition-transform hover:scale-125 hover:bg-white/10 ${
+                    myReaction === r.key ? 'scale-110 bg-white/10' : ''
+                  }`}
+                >
+                  {r.emoji}
+                </button>
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
+      {/* Aggregated counts */}
+      {totalCount > 0 && (
+        <div className="flex items-center gap-1 text-xs text-gray-400">
+          <span className="flex -space-x-1">
+            {topReactions.map((key) => (
+              <span
+                key={key}
+                className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-[#161631] border border-[#030014] text-[10px] leading-none"
+              >
+                {REACTION_MAP[key]?.emoji}
+              </span>
+            ))}
+          </span>
+          <span>{totalCount}</span>
+        </div>
+      )}
+    </div>
+  );
+});
+
+const Comment = memo(({ comment, formatDate, isPinned = false, reactionSummary, myReaction, onReact }) => (
+    <div
         className={`px-4 pt-4 pb-2 rounded-xl border transition-all group hover:shadow-lg hover:-translate-y-0.5 ${
-            isPinned 
-                ? 'bg-gradient-to-r from-indigo-500/10 to-purple-500/10 border-indigo-500/30 hover:bg-gradient-to-r hover:from-indigo-500/15 hover:to-purple-500/15' 
+            isPinned
+                ? 'bg-gradient-to-r from-indigo-500/10 to-purple-500/10 border-indigo-500/30 hover:bg-gradient-to-r hover:from-indigo-500/15 hover:to-purple-500/15'
                 : 'bg-white/5 border-white/10 hover:bg-white/10'
         }`}
     >
@@ -58,6 +178,12 @@ const Comment = memo(({ comment, formatDate, index, isPinned = false }) => (
                 <p className="text-gray-300 text-sm break-words leading-relaxed relative bottom-2">
                     {comment.content}
                 </p>
+                <ReactionBar
+                    commentId={comment.id}
+                    summary={reactionSummary}
+                    myReaction={myReaction}
+                    onReact={onReact}
+                />
             </div>
         </div>
     </div>
@@ -81,14 +207,14 @@ const CommentForm = memo(({ onSubmit, isSubmitting, error }) => {
                 if (e.target) e.target.value = '';
                 return;
             }
-            
+
             // Check file type
             if (!file.type.startsWith('image/')) {
                 alert('Please select a valid image file.');
                 if (e.target) e.target.value = '';
                 return;
             }
-            
+
             setImageFile(file);
             const reader = new FileReader();
             reader.onloadend = () => setImagePreview(reader.result);
@@ -107,7 +233,7 @@ const CommentForm = memo(({ onSubmit, isSubmitting, error }) => {
     const handleSubmit = useCallback((e) => {
         e.preventDefault();
         if (!newComment.trim() || !userName.trim()) return;
-        
+
         onSubmit({ newComment, userName, imageFile });
         setNewComment('');
         setUserName('');
@@ -230,6 +356,9 @@ const Komentar = () => {
     const [pinnedComment, setPinnedComment] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState('');
+    const [sortBy, setSortBy] = useState('newest'); // 'newest' | 'popular'
+    const [reactions, setReactions] = useState([]); // raw rows: {comment_id, emoji, visitor_id}
+    const visitorId = useMemo(() => getVisitorId(), []);
 
     useEffect(() => {
         // Initialize AOS
@@ -248,12 +377,12 @@ const Komentar = () => {
                     .select('*')
                     .eq('is_pinned', true)
                     .single();
-                
+
                 if (error && error.code !== 'PGRST116') {
                     console.error('Error fetching pinned comment:', error);
                     return;
                 }
-                
+
                 if (data) {
                     setPinnedComment(data);
                 }
@@ -273,12 +402,12 @@ const Komentar = () => {
                 .select('*')
                 .eq('is_pinned', false)
                 .order('created_at', { ascending: false });
-            
+
             if (error) {
                 console.error('Error fetching comments:', error);
                 return;
             }
-            
+
             setComments(data || []);
         };
 
@@ -287,13 +416,13 @@ const Komentar = () => {
         // Set up real-time subscription
         const subscription = supabase
             .channel('portfolio_comments')
-            .on('postgres_changes', 
-                { 
-                    event: '*', 
-                    schema: 'public', 
+            .on('postgres_changes',
+                {
+                    event: '*',
+                    schema: 'public',
                     table: 'portfolio_comments',
                     filter: 'is_pinned=eq.false'
-                }, 
+                },
                 () => {
                     fetchComments(); // Refresh comments when changes occur
                 }
@@ -305,9 +434,93 @@ const Komentar = () => {
         };
     }, []);
 
+    // Fetch all comment reactions + live-sync via realtime
+    useEffect(() => {
+        const fetchReactions = async () => {
+            const { data, error } = await supabase
+                .from('comment_reactions')
+                .select('comment_id, emoji, visitor_id');
+            if (error) {
+                console.error('Error fetching reactions:', error);
+                return;
+            }
+            setReactions(data || []);
+        };
+
+        fetchReactions();
+
+        const channel = supabase
+            .channel('comment_reactions_realtime')
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'comment_reactions' }, fetchReactions)
+            .subscribe();
+
+        return () => {
+            channel.unsubscribe();
+        };
+    }, []);
+
+    // Build per-comment reaction summaries + "my reaction" lookup
+    const { summaryByComment, myReactionByComment } = useMemo(() => {
+        const summary = {};
+        const mine = {};
+        reactions.forEach((r) => {
+            if (!summary[r.comment_id]) {
+                summary[r.comment_id] = Object.fromEntries(REACTIONS.map((x) => [x.key, 0]));
+            }
+            if (summary[r.comment_id][r.emoji] !== undefined) {
+                summary[r.comment_id][r.emoji] += 1;
+            }
+            if (r.visitor_id === visitorId) {
+                mine[r.comment_id] = r.emoji;
+            }
+        });
+        return { summaryByComment: summary, myReactionByComment: mine };
+    }, [reactions, visitorId]);
+
+    const getSummary = useCallback(
+        (commentId) => summaryByComment[commentId] || Object.fromEntries(REACTIONS.map((x) => [x.key, 0])),
+        [summaryByComment]
+    );
+
+    const handleReact = useCallback(
+        async (commentId, emojiKeyOrNull) => {
+            const existing = myReactionByComment[commentId];
+
+            // Optimistic local update
+            setReactions((prev) => {
+                const withoutMine = prev.filter((r) => !(r.comment_id === commentId && r.visitor_id === visitorId));
+                if (!emojiKeyOrNull) return withoutMine;
+                return [...withoutMine, { comment_id: commentId, emoji: emojiKeyOrNull, visitor_id: visitorId }];
+            });
+
+            try {
+                if (!emojiKeyOrNull) {
+                    await supabase
+                        .from('comment_reactions')
+                        .delete()
+                        .eq('comment_id', commentId)
+                        .eq('visitor_id', visitorId);
+                } else if (existing) {
+                    await supabase
+                        .from('comment_reactions')
+                        .update({ emoji: emojiKeyOrNull })
+                        .eq('comment_id', commentId)
+                        .eq('visitor_id', visitorId);
+                } else {
+                    await supabase
+                        .from('comment_reactions')
+                        .insert({ comment_id: commentId, emoji: emojiKeyOrNull, visitor_id: visitorId });
+                }
+            } catch (err) {
+                console.error('Error saving reaction:', err);
+            }
+        },
+        [myReactionByComment, visitorId]
+    );
+
     const uploadImage = useCallback(async (imageFile) => {
         if (!imageFile) return null;
-        
+
         const fileExt = imageFile.name.split('.').pop();
         const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
         const filePath = `profile-images/${fileName}`;
@@ -330,7 +543,7 @@ const Komentar = () => {
     const handleCommentSubmit = useCallback(async ({ newComment, userName, imageFile }) => {
         setError('');
         setIsSubmitting(true);
-        
+
         try {
             const profileImageUrl = await uploadImage(imageFile);
 
@@ -391,19 +604,53 @@ const Komentar = () => {
         }).format(date);
     }, []);
 
+    // Sort regular comments by newest or by total reaction count
+    const sortedComments = useMemo(() => {
+        if (sortBy !== 'popular') return comments;
+        const totalFor = (id) => Object.values(getSummary(id)).reduce((a, b) => a + b, 0);
+        return [...comments].sort((a, b) => totalFor(b.id) - totalFor(a.id));
+    }, [comments, sortBy, getSummary]);
+
     // Calculate total comments (pinned + regular)
     const totalComments = comments.length + (pinnedComment ? 1 : 0);
 
     return (
         <div className="w-full bg-gradient-to-b from-white/10 to-white/5 rounded-2xl  backdrop-blur-xl shadow-xl" data-aos="fade-up" data-aos-duration="1000">
             <div className="p-6 border-b border-white/10" data-aos="fade-down" data-aos-duration="800">
-                <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-xl bg-indigo-500/20">
-                        <MessageCircle className="w-6 h-6 text-indigo-400" />
+                <div className="flex items-center justify-between gap-3 flex-wrap">
+                    <div className="flex items-center gap-3">
+                        <div className="p-2 rounded-xl bg-indigo-500/20">
+                            <MessageCircle className="w-6 h-6 text-indigo-400" />
+                        </div>
+                        <h3 className="text-xl font-semibold text-white">
+                            Comments <span className="text-indigo-400">({totalComments})</span>
+                        </h3>
                     </div>
-                    <h3 className="text-xl font-semibold text-white">
-                        Comments <span className="text-indigo-400">({totalComments})</span>
-                    </h3>
+
+                    {comments.length > 1 && (
+                        <div className="flex gap-1 p-1 rounded-xl bg-white/5 border border-white/10">
+                            <button
+                                onClick={() => setSortBy('newest')}
+                                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                                    sortBy === 'newest'
+                                        ? 'bg-indigo-500/25 border border-indigo-500/35 text-white'
+                                        : 'text-gray-500 hover:text-gray-300'
+                                }`}
+                            >
+                                Newest
+                            </button>
+                            <button
+                                onClick={() => setSortBy('popular')}
+                                className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                                    sortBy === 'popular'
+                                        ? 'bg-indigo-500/25 border border-indigo-500/35 text-white'
+                                        : 'text-gray-500 hover:text-gray-300'
+                                }`}
+                            >
+                                <Flame className="w-3 h-3" /> Popular
+                            </button>
+                        </div>
+                    )}
                 </div>
             </div>
             <div className="p-6 space-y-6">
@@ -413,7 +660,7 @@ const Komentar = () => {
                         <p className="text-sm">{error}</p>
                     </div>
                 )}
-                
+
                 <div>
                     <CommentForm onSubmit={handleCommentSubmit} isSubmitting={isSubmitting} error={error} />
                 </div>
@@ -422,15 +669,17 @@ const Komentar = () => {
                     {/* Pinned Comment */}
                     {pinnedComment && (
                         <div data-aos="fade-down" data-aos-duration="800">
-                            <Comment 
-                                comment={pinnedComment} 
+                            <Comment
+                                comment={pinnedComment}
                                 formatDate={formatDate}
-                                index={0}
                                 isPinned={true}
+                                reactionSummary={getSummary(pinnedComment.id)}
+                                myReaction={myReactionByComment[pinnedComment.id]}
+                                onReact={handleReact}
                             />
                         </div>
                     )}
-                    
+
                     {/* Regular Comments */}
                     {comments.length === 0 && !pinnedComment ? (
                         <div className="text-center py-8" data-aos="fade-in">
@@ -438,13 +687,15 @@ const Komentar = () => {
                             <p className="text-gray-400">No comments yet. Start the conversation!</p>
                         </div>
                     ) : (
-                        comments.map((comment, index) => (
-                            <Comment 
-                                key={comment.id} 
-                                comment={comment} 
+                        sortedComments.map((comment) => (
+                            <Comment
+                                key={comment.id}
+                                comment={comment}
                                 formatDate={formatDate}
-                                index={index + (pinnedComment ? 1 : 0)}
                                 isPinned={false}
+                                reactionSummary={getSummary(comment.id)}
+                                myReaction={myReactionByComment[comment.id]}
+                                onReact={handleReact}
                             />
                         ))
                     )}
