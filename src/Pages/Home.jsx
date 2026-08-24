@@ -88,47 +88,39 @@ const HoverRevealPhoto = memo(() => {
 
   return (
     <div
-      className="w-full py-0 md:py-[10%] sm:py-0 lg:w-1/2 h-[300px] sm:h-[420px] lg:h-[550px] xl:h-[650px] relative flex items-center justify-center order-2 lg:order-2 mt-5 sm:mt-0"
+      className="w-full py-0 md:py-[10%] sm:py-0 lg:w-1/2 h-[320px] sm:h-[460px] lg:h-[600px] xl:h-[700px] relative flex items-end justify-center order-2 lg:order-2 mt-5 sm:mt-0"
       data-aos="fade-left"
       data-aos-delay="600"
     >
-      <div className="relative w-full h-full max-w-sm mx-auto">
-        <div
-          className={`absolute -inset-3 bg-gradient-to-r from-[#6366f1]/20 to-[#a855f7]/20 rounded-3xl blur-3xl transition-all duration-700 ease-in-out ${
-            isHovering ? "opacity-70 scale-105" : "opacity-30 scale-100"
-          }`}
+      <div
+        ref={containerRef}
+        onMouseEnter={() => setIsHovering(true)}
+        onMouseLeave={() => setIsHovering(false)}
+        onMouseMove={handleMouseMove}
+        className="relative w-full h-full max-w-sm mx-auto"
+      >
+        {/* Base photo - the one wearing the shirt, always fully visible, no box/border, just floats on the hero background */}
+        <img
+          src="/ProfileHover2.jpg"
+          alt="Muhammad Farez Nabil Chosy"
+          className="w-full h-full object-contain object-bottom drop-shadow-[0_20px_50px_rgba(120,119,198,0.25)] transition-transform duration-700 ease-out"
+          style={{ transform: isHovering ? "scale(1.02)" : "scale(1)" }}
+          loading="lazy"
         />
 
-        <div
-          ref={containerRef}
-          onMouseEnter={() => setIsHovering(true)}
-          onMouseLeave={() => setIsHovering(false)}
-          onMouseMove={handleMouseMove}
-          className="relative z-10 w-full h-full rounded-3xl overflow-hidden border border-white/10 shadow-[0_0_50px_rgba(120,119,198,0.2)]"
-        >
-          {/* Base photo - the one wearing the shirt, always fully visible */}
-          <img
-            src="/ProfileHover2.jpg"
-            alt="Muhammad Farez Nabil Chosy"
-            className="w-full h-full object-cover"
-            loading="lazy"
-          />
-
-          {/* Second photo - only revealed in a soft area following the cursor, not a full swap */}
-          <img
-            src="/ProfileHover1.jpg"
-            alt="Muhammad Farez Nabil Chosy alternate"
-            className="absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ease-out"
-            loading="lazy"
-            style={{
-              opacity: isHovering ? 1 : 0,
-              WebkitMaskImage: `radial-gradient(circle 160px at ${maskPos.x} ${maskPos.y}, black 0%, black 55%, transparent 100%)`,
-              maskImage: `radial-gradient(circle 160px at ${maskPos.x} ${maskPos.y}, black 0%, black 55%, transparent 100%)`,
-            }}
-          />
-
-          <div className="absolute inset-0 bg-gradient-to-t from-[#030014]/40 via-transparent to-transparent pointer-events-none" />
-        </div>
+        {/* Second photo - only revealed in a soft area following the cursor, not a full swap */}
+        <img
+          src="/ProfileHover1.jpg"
+          alt="Muhammad Farez Nabil Chosy alternate"
+          className="absolute inset-0 w-full h-full object-contain object-bottom transition-opacity duration-300 ease-out"
+          loading="lazy"
+          style={{
+            opacity: isHovering ? 1 : 0,
+            transform: isHovering ? "scale(1.02)" : "scale(1)",
+            WebkitMaskImage: `radial-gradient(circle 160px at ${maskPos.x} ${maskPos.y}, black 0%, black 55%, transparent 100%)`,
+            maskImage: `radial-gradient(circle 160px at ${maskPos.x} ${maskPos.y}, black 0%, black 55%, transparent 100%)`,
+          }}
+        />
       </div>
     </div>
   );
