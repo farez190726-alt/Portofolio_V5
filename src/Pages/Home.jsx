@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, memo } from "react"
+import React, { useState, useEffect, useCallback, useRef, memo } from "react"
 import { Helmet } from "react-helmet-async"
 import { Github, Linkedin, Mail, ExternalLink, Instagram, Sparkles } from "lucide-react"
 import AOS from 'aos'
@@ -73,6 +73,67 @@ const SocialLink = memo(({ icon: Icon, link, label }) => (
   </a>
 ));
 
+const HoverRevealPhoto = memo(() => {
+  const containerRef = useRef(null);
+  const [isHovering, setIsHovering] = useState(false);
+  const [maskPos, setMaskPos] = useState({ x: "50%", y: "50%" });
+
+  const handleMouseMove = useCallback((e) => {
+    const rect = containerRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    setMaskPos({ x: `${x}%`, y: `${y}%` });
+  }, []);
+
+  return (
+    <div
+      className="w-full py-0 md:py-[10%] sm:py-0 lg:w-1/2 h-[300px] sm:h-[420px] lg:h-[550px] xl:h-[650px] relative flex items-center justify-center order-2 lg:order-2 mt-5 sm:mt-0"
+      data-aos="fade-left"
+      data-aos-delay="600"
+    >
+      <div className="relative w-full h-full max-w-sm mx-auto">
+        <div
+          className={`absolute -inset-3 bg-gradient-to-r from-[#6366f1]/20 to-[#a855f7]/20 rounded-3xl blur-3xl transition-all duration-700 ease-in-out ${
+            isHovering ? "opacity-70 scale-105" : "opacity-30 scale-100"
+          }`}
+        />
+
+        <div
+          ref={containerRef}
+          onMouseEnter={() => setIsHovering(true)}
+          onMouseLeave={() => setIsHovering(false)}
+          onMouseMove={handleMouseMove}
+          className="relative z-10 w-full h-full rounded-3xl overflow-hidden border border-white/10 shadow-[0_0_50px_rgba(120,119,198,0.2)]"
+        >
+          {/* Base photo - the one wearing the shirt, always fully visible */}
+          <img
+            src="/ProfileHover2.jpg"
+            alt="Muhammad Farez Nabil Chosy"
+            className="w-full h-full object-cover"
+            loading="lazy"
+          />
+
+          {/* Second photo - only revealed in a soft area following the cursor, not a full swap */}
+          <img
+            src="/ProfileHover1.jpg"
+            alt="Muhammad Farez Nabil Chosy alternate"
+            className="absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ease-out"
+            loading="lazy"
+            style={{
+              opacity: isHovering ? 1 : 0,
+              WebkitMaskImage: `radial-gradient(circle 160px at ${maskPos.x} ${maskPos.y}, black 0%, black 55%, transparent 100%)`,
+              maskImage: `radial-gradient(circle 160px at ${maskPos.x} ${maskPos.y}, black 0%, black 55%, transparent 100%)`,
+            }}
+          />
+
+          <div className="absolute inset-0 bg-gradient-to-t from-[#030014]/40 via-transparent to-transparent pointer-events-none" />
+        </div>
+      </div>
+    </div>
+  );
+});
+
 const TYPING_SPEED = 100;
 const ERASING_SPEED = 50;
 const PAUSE_DURATION = 2000;
@@ -90,7 +151,6 @@ const Home = () => {
   const [wordIndex, setWordIndex] = useState(0)
   const [charIndex, setCharIndex] = useState(0)
   const [isLoaded, setIsLoaded] = useState(false)
-  const [isHovering, setIsHovering] = useState(false)
 
   useEffect(() => {
     const initAOS = () => {
@@ -213,48 +273,8 @@ const Home = () => {
                 </div>
               </div>
 
-              {/* Right Column - Profile Photo (fades to alternate photo on hover) */}
-              <div className="w-full py-0 md:py-[10%] sm:py-0 lg:w-1/2 h-[260px] sm:h-[400px] lg:h-[600px] xl:h-[750px] relative flex items-center justify-center order-2 lg:order-2  mt-5 sm:mt-0"
-                onMouseEnter={() => setIsHovering(true)}
-                onMouseLeave={() => setIsHovering(false)}
-                data-aos="fade-left"
-                data-aos-delay="600">
-                <div className="relative w-full opacity-90">
-                  <div className={`absolute inset-0 bg-gradient-to-r from-[#6366f1]/10 to-[#a855f7]/10 rounded-3xl blur-3xl transition-all duration-700 ease-in-out ${
-                    isHovering ? "opacity-50 scale-105" : "opacity-20 scale-100"
-                  }`}>
-                  </div>
-
-                  <div className={`relative lg:left-12 z-10 w-full max-w-[280px] sm:max-w-[340px] lg:max-w-[420px] mx-auto aspect-square rounded-3xl overflow-hidden border border-white/10 shadow-2xl transform transition-transform duration-500 ${
-                    isHovering ? "scale-105" : "scale-100"
-                  }`}>
-                    {/* Base photo */}
-                    <img
-                      src="/Photo.jpg"
-                      alt="Muhammad Farez Nabil Chosy"
-                      className="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
-                    />
-                    {/* Alternate photo - fades in on hover */}
-                    <img
-                      src="/ProfileHover2.jpg"
-                      alt="Muhammad Farez Nabil Chosy alternate"
-                      className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${
-                        isHovering ? "opacity-100" : "opacity-0"
-                      }`}
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
-                  </div>
-
-                  <div className={`absolute inset-0 pointer-events-none transition-all duration-700 ${
-                    isHovering ? "opacity-50" : "opacity-20"
-                  }`}>
-                    <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-gradient-to-br from-indigo-500/10 to-purple-500/10 blur-3xl animate-[pulse_6s_cubic-bezier(0.4,0,0.6,1)_infinite] transition-all duration-700 ${
-                      isHovering ? "scale-110" : "scale-100"
-                    }`}>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              {/* Right Column - Hover Reveal Photo */}
+              <HoverRevealPhoto />
             </div>
           </div>
         </div>
