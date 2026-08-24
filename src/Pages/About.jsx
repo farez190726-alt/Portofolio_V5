@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, memo, useMemo, useCallback } from "react"
+import React, { useEffect, useState, memo, useMemo } from "react"
 import { FileText, Code, Award, Globe, ArrowUpRight, Sparkles, UserCheck } from "lucide-react"
 import AOS from 'aos'
 import 'aos/dist/aos.css'
@@ -28,18 +28,6 @@ const Header = memo(() => (
 ));
 
 const ProfileImage = memo(() => {
-  const containerRef = useRef(null);
-  const [isHovering, setIsHovering] = useState(false);
-  const [maskPos, setMaskPos] = useState({ x: "50%", y: "50%" });
-
-  const handleMouseMove = useCallback((e) => {
-    const rect = containerRef.current?.getBoundingClientRect();
-    if (!rect) return;
-    const x = ((e.clientX - rect.left) / rect.width) * 100;
-    const y = ((e.clientY - rect.top) / rect.height) * 100;
-    setMaskPos({ x: `${x}%`, y: `${y}%` });
-  }, []);
-
   return (
     <div className="flex justify-end items-center sm:p-12 sm:py-0 sm:pb-0 p-0 py-2 pb-2">
       <div
@@ -55,38 +43,19 @@ const ProfileImage = memo(() => {
         </div>
 
         <div className="relative">
-          <div
-            ref={containerRef}
-            onMouseEnter={() => setIsHovering(true)}
-            onMouseLeave={() => setIsHovering(false)}
-            onMouseMove={handleMouseMove}
-            className="w-72 h-72 sm:w-80 sm:h-80 rounded-full overflow-hidden shadow-[0_0_40px_rgba(120,119,198,0.3)] transform transition-all duration-700 group-hover:scale-105"
-          >
+          <div className="w-72 h-72 sm:w-80 sm:h-80 rounded-full overflow-hidden shadow-[0_0_40px_rgba(120,119,198,0.3)] transform transition-all duration-700 group-hover:scale-105">
             <div className="absolute inset-0 border-4 border-white/20 rounded-full z-20 transition-all duration-700 group-hover:border-white/40 group-hover:scale-105 pointer-events-none" />
 
             {/* Optimized overlay effects - disabled on mobile */}
             <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/40 z-10 transition-opacity duration-700 group-hover:opacity-0 hidden sm:block pointer-events-none" />
             <div className="absolute inset-0 bg-gradient-to-t from-purple-500/20 via-transparent to-blue-500/20 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-700 hidden sm:block pointer-events-none" />
 
-            {/* Base photo - always fully visible */}
+            {/* Profile photo */}
             <img
-              src="/ProfileHover1.jpg"
+              src="/Photo.jpg"
               alt="Profile"
               className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110 group-hover:rotate-2"
               loading="lazy"
-            />
-
-            {/* Second photo - only revealed in a soft circle that follows the cursor, so it doesn't fully replace photo 1 */}
-            <img
-              src="/ProfileHover2.jpg"
-              alt="Profile alternate"
-              className="absolute inset-0 w-full h-full object-cover scale-110 rotate-2 transition-opacity duration-300 ease-out"
-              loading="lazy"
-              style={{
-                opacity: isHovering ? 1 : 0,
-                WebkitMaskImage: `radial-gradient(circle 110px at ${maskPos.x} ${maskPos.y}, black 0%, black 55%, transparent 100%)`,
-                maskImage: `radial-gradient(circle 110px at ${maskPos.x} ${maskPos.y}, black 0%, black 55%, transparent 100%)`,
-              }}
             />
 
             {/* Advanced hover effects - desktop only */}
