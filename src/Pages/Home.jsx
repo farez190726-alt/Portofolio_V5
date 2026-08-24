@@ -213,7 +213,7 @@ const Home = () => {
                 </div>
               </div>
 
-              {/* Right Column - WebM Video */}
+              {/* Right Column - Profile Photo (fades to alternate photo on hover) */}
               <div className="w-full py-0 md:py-[10%] sm:py-0 lg:w-1/2 h-[260px] sm:h-[400px] lg:h-[600px] xl:h-[750px] relative flex items-center justify-center order-2 lg:order-2  mt-5 sm:mt-0"
                 onMouseEnter={() => setIsHovering(true)}
                 onMouseLeave={() => setIsHovering(false)}
@@ -225,18 +225,24 @@ const Home = () => {
                   }`}>
                   </div>
 
-                  <div className={`relative lg:left-12 z-10 w-full opacity-90 transform transition-transform duration-500 ${
+                  <div className={`relative lg:left-12 z-10 w-full max-w-[280px] sm:max-w-[340px] lg:max-w-[420px] mx-auto aspect-square rounded-3xl overflow-hidden border border-white/10 shadow-2xl transform transition-transform duration-500 ${
                     isHovering ? "scale-105" : "scale-100"
                   }`}>
+                    {/* Base photo */}
                     <img
-                      src="Animation1.gif"
-                      alt="Developer Animation"
-                      className={`w-full h-full object-contain transition-all duration-500 ${
-                        isHovering 
-                          ? "scale-[95%] sm:scale-[90%] md:scale-[90%] lg:scale-[90%] rotate-2" 
-                          : "scale-[90%] sm:scale-[80%] md:scale-[80%] lg:scale-[80%]"
+                      src="/Photo.jpg"
+                      alt="Muhammad Farez Nabil Chosy"
+                      className="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
+                    />
+                    {/* Alternate photo - fades in on hover */}
+                    <img
+                      src="/ProfileHover2.jpg"
+                      alt="Muhammad Farez Nabil Chosy alternate"
+                      className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${
+                        isHovering ? "opacity-100" : "opacity-0"
                       }`}
                     />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
                   </div>
 
                   <div className={`absolute inset-0 pointer-events-none transition-all duration-700 ${
