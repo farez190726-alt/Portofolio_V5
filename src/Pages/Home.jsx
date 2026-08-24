@@ -101,7 +101,7 @@ const HoverRevealPhoto = memo(() => {
       >
         {/* Base photo - the one wearing the shirt, always fully visible, no box/border, just floats on the hero background */}
         <img
-          src="/ProfileHover2.jpg"
+          src="/ProfileHover2.png"
           alt="Muhammad Farez Nabil Chosy"
           className="w-full h-full object-contain object-bottom drop-shadow-[0_20px_50px_rgba(120,119,198,0.25)] transition-transform duration-700 ease-out"
           style={{ transform: isHovering ? "scale(1.02)" : "scale(1)" }}
@@ -110,7 +110,7 @@ const HoverRevealPhoto = memo(() => {
 
         {/* Second photo - only revealed in a soft area following the cursor, not a full swap */}
         <img
-          src="/ProfileHover1.jpg"
+          src="/ProfileHover1.png"
           alt="Muhammad Farez Nabil Chosy alternate"
           className="absolute inset-0 w-full h-full object-contain object-bottom transition-opacity duration-300 ease-out"
           loading="lazy"
