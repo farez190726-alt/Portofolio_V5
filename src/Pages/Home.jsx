@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef, memo } from "react"
 import { Helmet } from "react-helmet-async"
 import { Github, Linkedin, Mail, ExternalLink, Instagram, Sparkles } from "lucide-react"
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion"
 import AOS from 'aos'
 import 'aos/dist/aos.css'
 
@@ -77,14 +78,54 @@ const HoverRevealPhoto = memo(() => {
   const containerRef = useRef(null);
   const [isHovering, setIsHovering] = useState(false);
   const [maskPos, setMaskPos] = useState({ x: "50%", y: "50%" });
+  const [flash, setFlash] = useState(false);
+  const flashTimeout = useRef(null);
+
+  // Tilt (parallax) motion values — the whole composite tilts together,
+  // so the two photos never drift relative to each other.
+  const rotateXRaw = useMotionValue(0);
+  const rotateYRaw = useMotionValue(0);
+  const rotateX = useSpring(rotateXRaw, { stiffness: 150, damping: 18 });
+  const rotateY = useSpring(rotateYRaw, { stiffness: 150, damping: 18 });
+  const glowXRaw = useMotionValue(50);
+  const glowYRaw = useMotionValue(50);
+  const glowX = useSpring(glowXRaw, { stiffness: 120, damping: 20 });
+  const glowY = useSpring(glowYRaw, { stiffness: 120, damping: 20 });
+  const glowBackground = useTransform(
+    [glowX, glowY],
+    ([x, y]) =>
+      `radial-gradient(circle 220px at ${x}% ${y}%, rgba(139,92,246,0.45), rgba(99,102,241,0.15) 60%, transparent 80%)`
+  );
 
   const handleMouseMove = useCallback((e) => {
     const rect = containerRef.current?.getBoundingClientRect();
     if (!rect) return;
-    const x = ((e.clientX - rect.left) / rect.width) * 100;
-    const y = ((e.clientY - rect.top) / rect.height) * 100;
-    setMaskPos({ x: `${x}%`, y: `${y}%` });
+    const px = (e.clientX - rect.left) / rect.width;
+    const py = (e.clientY - rect.top) / rect.height;
+
+    setMaskPos({ x: `${px * 100}%`, y: `${py * 100}%` });
+    glowXRaw.set(px * 100);
+    glowYRaw.set(py * 100);
+
+    // Subtle 3D tilt, capped so it stays tasteful
+    rotateYRaw.set((px - 0.5) * 14);
+    rotateXRaw.set((0.5 - py) * 10);
+  }, [glowXRaw, glowYRaw, rotateXRaw, rotateYRaw]);
+
+  const handleEnter = useCallback(() => {
+    setIsHovering(true);
+    setFlash(true);
+    clearTimeout(flashTimeout.current);
+    flashTimeout.current = setTimeout(() => setFlash(false), 380);
   }, []);
+
+  const handleLeave = useCallback(() => {
+    setIsHovering(false);
+    rotateXRaw.set(0);
+    rotateYRaw.set(0);
+  }, [rotateXRaw, rotateYRaw]);
+
+  useEffect(() => () => clearTimeout(flashTimeout.current), []);
 
   return (
     <div
@@ -92,14 +133,24 @@ const HoverRevealPhoto = memo(() => {
       data-aos="fade-left"
       data-aos-delay="600"
     >
-      <div
+      {/* Cursor-follow spotlight glow, sits behind the photo */}
+      <motion.div
+        className="pointer-events-none absolute inset-0 -z-10 rounded-full blur-3xl transition-opacity duration-500"
+        style={{
+          opacity: isHovering ? 0.55 : 0,
+          background: glowBackground,
+        }}
+      />
+
+      <motion.div
         ref={containerRef}
-        onMouseEnter={() => setIsHovering(true)}
-        onMouseLeave={() => setIsHovering(false)}
+        onMouseEnter={handleEnter}
+        onMouseLeave={handleLeave}
         onMouseMove={handleMouseMove}
-        className="relative w-full h-full max-w-sm mx-auto"
+        style={{ rotateX, rotateY, transformPerspective: 900 }}
+        className="relative w-full h-full max-w-sm mx-auto [transform-style:preserve-3d]"
       >
-        {/* Base photo - the one wearing the shirt, always fully visible, no box/border, just floats on the hero background */}
+        {/* Base photo - always fully visible, floats on the hero background */}
         <img
           src="/ProfileHover2.png"
           alt="Muhammad Farez Nabil Chosy"
@@ -108,20 +159,41 @@ const HoverRevealPhoto = memo(() => {
           loading="lazy"
         />
 
-        {/* Second photo - only revealed in a soft area following the cursor, not a full swap */}
-        <img
-          src="/ProfileHover1.png"
-          alt="Muhammad Farez Nabil Chosy alternate"
-          className="absolute inset-0 w-full h-full object-contain object-bottom transition-opacity duration-300 ease-out"
-          loading="lazy"
+        {/*
+          Second photo - only revealed in a soft area following the cursor.
+          It's shot with slightly wider shoulder framing than the base photo,
+          so it's nudged & scaled down (anchored at the neckline, which is
+          where the two photos already line up) to keep the swap seamless.
+        */}
+        <div
+          className="absolute inset-0 origin-[50%_18%] transition-transform duration-700 ease-out"
+          style={{ transform: `scale(${isHovering ? 0.9 : 0.88})` }}
+        >
+          <img
+            src="/ProfileHover1.png"
+            alt="Muhammad Farez Nabil Chosy alternate"
+            className="w-full h-full object-contain object-bottom transition-opacity duration-300 ease-out"
+            loading="lazy"
+            style={{
+              opacity: isHovering ? 1 : 0,
+              WebkitMaskImage: `radial-gradient(circle 145px at ${maskPos.x} ${maskPos.y}, black 0%, black 30%, transparent 92%)`,
+              maskImage: `radial-gradient(circle 145px at ${maskPos.x} ${maskPos.y}, black 0%, black 30%, transparent 92%)`,
+            }}
+          />
+        </div>
+
+        {/* Digital-glitch flash: dresses up the reveal moment and smooths over any residual seam */}
+        <div
+          className="pointer-events-none absolute inset-0 mix-blend-overlay transition-opacity ease-out"
           style={{
-            opacity: isHovering ? 1 : 0,
-            transform: isHovering ? "scale(1.02)" : "scale(1)",
-            WebkitMaskImage: `radial-gradient(circle 160px at ${maskPos.x} ${maskPos.y}, black 0%, black 55%, transparent 100%)`,
-            maskImage: `radial-gradient(circle 160px at ${maskPos.x} ${maskPos.y}, black 0%, black 55%, transparent 100%)`,
+            opacity: flash ? 0.35 : 0,
+            transitionDuration: flash ? "80ms" : "380ms",
+            backgroundImage:
+              "repeating-linear-gradient(0deg, rgba(168,85,247,0.5) 0px, transparent 1px, transparent 3px, rgba(99,102,241,0.5) 4px)",
+            backgroundSize: "100% 6px",
           }}
         />
-      </div>
+      </motion.div>
     </div>
   );
 });
