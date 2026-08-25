@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useCallback, useRef, memo } from "react"
+import React, { useState, useEffect, useCallback, memo } from "react"
 import { Helmet } from "react-helmet-async"
 import { Github, Linkedin, Mail, ExternalLink, Instagram, Sparkles } from "lucide-react"
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion"
 import AOS from 'aos'
 import 'aos/dist/aos.css'
 
@@ -74,130 +73,6 @@ const SocialLink = memo(({ icon: Icon, link, label }) => (
   </a>
 ));
 
-const HoverRevealPhoto = memo(() => {
-  const containerRef = useRef(null);
-  const [isHovering, setIsHovering] = useState(false);
-  const [maskPos, setMaskPos] = useState({ x: "50%", y: "50%" });
-  const [flash, setFlash] = useState(false);
-  const flashTimeout = useRef(null);
-
-  // Tilt (parallax) motion values — the whole composite tilts together,
-  // so the two photos never drift relative to each other.
-  const rotateXRaw = useMotionValue(0);
-  const rotateYRaw = useMotionValue(0);
-  const rotateX = useSpring(rotateXRaw, { stiffness: 150, damping: 18 });
-  const rotateY = useSpring(rotateYRaw, { stiffness: 150, damping: 18 });
-  const glowXRaw = useMotionValue(50);
-  const glowYRaw = useMotionValue(50);
-  const glowX = useSpring(glowXRaw, { stiffness: 120, damping: 20 });
-  const glowY = useSpring(glowYRaw, { stiffness: 120, damping: 20 });
-  const glowBackground = useTransform(
-    [glowX, glowY],
-    ([x, y]) =>
-      `radial-gradient(circle 220px at ${x}% ${y}%, rgba(139,92,246,0.45), rgba(99,102,241,0.15) 60%, transparent 80%)`
-  );
-
-  const handleMouseMove = useCallback((e) => {
-    const rect = containerRef.current?.getBoundingClientRect();
-    if (!rect) return;
-    const px = (e.clientX - rect.left) / rect.width;
-    const py = (e.clientY - rect.top) / rect.height;
-
-    setMaskPos({ x: `${px * 100}%`, y: `${py * 100}%` });
-    glowXRaw.set(px * 100);
-    glowYRaw.set(py * 100);
-
-    // Subtle 3D tilt, capped so it stays tasteful
-    rotateYRaw.set((px - 0.5) * 14);
-    rotateXRaw.set((0.5 - py) * 10);
-  }, [glowXRaw, glowYRaw, rotateXRaw, rotateYRaw]);
-
-  const handleEnter = useCallback(() => {
-    setIsHovering(true);
-    setFlash(true);
-    clearTimeout(flashTimeout.current);
-    flashTimeout.current = setTimeout(() => setFlash(false), 380);
-  }, []);
-
-  const handleLeave = useCallback(() => {
-    setIsHovering(false);
-    rotateXRaw.set(0);
-    rotateYRaw.set(0);
-  }, [rotateXRaw, rotateYRaw]);
-
-  useEffect(() => () => clearTimeout(flashTimeout.current), []);
-
-  return (
-    <div
-      className="w-full py-0 md:py-[10%] sm:py-0 lg:w-1/2 h-[320px] sm:h-[460px] lg:h-[600px] xl:h-[700px] relative flex items-end justify-center order-2 lg:order-2 mt-5 sm:mt-0"
-      data-aos="fade-left"
-      data-aos-delay="600"
-    >
-      {/* Cursor-follow spotlight glow, sits behind the photo */}
-      <motion.div
-        className="pointer-events-none absolute inset-0 -z-10 rounded-full blur-3xl transition-opacity duration-500"
-        style={{
-          opacity: isHovering ? 0.55 : 0,
-          background: glowBackground,
-        }}
-      />
-
-      <motion.div
-        ref={containerRef}
-        onMouseEnter={handleEnter}
-        onMouseLeave={handleLeave}
-        onMouseMove={handleMouseMove}
-        style={{ rotateX, rotateY, transformPerspective: 900 }}
-        className="relative w-full h-full max-w-sm mx-auto [transform-style:preserve-3d]"
-      >
-        {/* Base photo - always fully visible, floats on the hero background */}
-        <img
-          src="/ProfileHover2.png"
-          alt="Muhammad Farez Nabil Chosy"
-          className="w-full h-full object-contain object-bottom drop-shadow-[0_20px_50px_rgba(120,119,198,0.25)] transition-transform duration-700 ease-out"
-          style={{ transform: isHovering ? "scale(1.02)" : "scale(1)" }}
-          loading="lazy"
-        />
-
-        {/*
-          Second photo - only revealed in a soft area following the cursor.
-          It's shot with slightly wider shoulder framing than the base photo,
-          so it's nudged & scaled down (anchored at the neckline, which is
-          where the two photos already line up) to keep the swap seamless.
-        */}
-        <div
-          className="absolute inset-0 origin-[50%_18%] transition-transform duration-700 ease-out"
-          style={{ transform: `scale(${isHovering ? 0.9 : 0.88})` }}
-        >
-          <img
-            src="/ProfileHover1.png"
-            alt="Muhammad Farez Nabil Chosy alternate"
-            className="w-full h-full object-contain object-bottom transition-opacity duration-300 ease-out"
-            loading="lazy"
-            style={{
-              opacity: isHovering ? 1 : 0,
-              WebkitMaskImage: `radial-gradient(circle 145px at ${maskPos.x} ${maskPos.y}, black 0%, black 30%, transparent 92%)`,
-              maskImage: `radial-gradient(circle 145px at ${maskPos.x} ${maskPos.y}, black 0%, black 30%, transparent 92%)`,
-            }}
-          />
-        </div>
-
-        {/* Digital-glitch flash: dresses up the reveal moment and smooths over any residual seam */}
-        <div
-          className="pointer-events-none absolute inset-0 mix-blend-overlay transition-opacity ease-out"
-          style={{
-            opacity: flash ? 0.35 : 0,
-            transitionDuration: flash ? "80ms" : "380ms",
-            backgroundImage:
-              "repeating-linear-gradient(0deg, rgba(168,85,247,0.5) 0px, transparent 1px, transparent 3px, rgba(99,102,241,0.5) 4px)",
-            backgroundSize: "100% 6px",
-          }}
-        />
-      </motion.div>
-    </div>
-  );
-});
-
 const TYPING_SPEED = 100;
 const ERASING_SPEED = 50;
 const PAUSE_DURATION = 2000;
@@ -215,6 +90,7 @@ const Home = () => {
   const [wordIndex, setWordIndex] = useState(0)
   const [charIndex, setCharIndex] = useState(0)
   const [isLoaded, setIsLoaded] = useState(false)
+  const [isHovering, setIsHovering] = useState(false)
 
   useEffect(() => {
     const initAOS = () => {
@@ -337,8 +213,42 @@ const Home = () => {
                 </div>
               </div>
 
-              {/* Right Column - Hover Reveal Photo */}
-              <HoverRevealPhoto />
+              {/* Right Column - WebM Video */}
+              <div className="w-full py-0 md:py-[10%] sm:py-0 lg:w-1/2 h-[260px] sm:h-[400px] lg:h-[600px] xl:h-[750px] relative flex items-center justify-center order-2 lg:order-2  mt-5 sm:mt-0"
+                onMouseEnter={() => setIsHovering(true)}
+                onMouseLeave={() => setIsHovering(false)}
+                data-aos="fade-left"
+                data-aos-delay="600">
+                <div className="relative w-full opacity-90">
+                  <div className={`absolute inset-0 bg-gradient-to-r from-[#6366f1]/10 to-[#a855f7]/10 rounded-3xl blur-3xl transition-all duration-700 ease-in-out ${
+                    isHovering ? "opacity-50 scale-105" : "opacity-20 scale-100"
+                  }`}>
+                  </div>
+
+                  <div className={`relative lg:left-12 z-10 w-full opacity-90 transform transition-transform duration-500 ${
+                    isHovering ? "scale-105" : "scale-100"
+                  }`}>
+                    <img
+                      src="Animation1.gif"
+                      alt="Developer Animation"
+                      className={`w-full h-full object-contain transition-all duration-500 ${
+                        isHovering 
+                          ? "scale-[95%] sm:scale-[90%] md:scale-[90%] lg:scale-[90%] rotate-2" 
+                          : "scale-[90%] sm:scale-[80%] md:scale-[80%] lg:scale-[80%]"
+                      }`}
+                    />
+                  </div>
+
+                  <div className={`absolute inset-0 pointer-events-none transition-all duration-700 ${
+                    isHovering ? "opacity-50" : "opacity-20"
+                  }`}>
+                    <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-gradient-to-br from-indigo-500/10 to-purple-500/10 blur-3xl animate-[pulse_6s_cubic-bezier(0.4,0,0.6,1)_infinite] transition-all duration-700 ${
+                      isHovering ? "scale-110" : "scale-100"
+                    }`}>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
