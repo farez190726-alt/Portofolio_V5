@@ -49,7 +49,7 @@ const BackgroundEffect = () => (
       alt=""
       className="absolute -top-4 -left-4 w-56 sm:w-72 opacity-30 -scale-x-100 pointer-events-none select-none"
     />
-    <WebCorner className="absolute -bottom-16 -right-16 w-72 h-72 opacity-20 rotate-180" stroke="#2563eb" />
+    <WebCorner className="absolute -bottom-16 -right-16 w-72 h-72 opacity-20" stroke="#2563eb" />
   </div>
 );
 
@@ -67,7 +67,7 @@ const WelcomeScreen = ({ onLoadingComplete }) => {
 
   useEffect(() => {
     AOS.init({
-      duration: 1000,
+      duration: 10000,
       once: false,
       mirror: false,
     });
