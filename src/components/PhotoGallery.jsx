@@ -19,7 +19,7 @@ const ToggleButton = ({ onClick, isShowingMore }) => (
         <polyline points={isShowingMore ? "18 15 12 9 6 15" : "6 9 12 15 18 9"}></polyline>
       </svg>
     </span>
-    <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-purple-500/50 transition-all duration-300 group-hover:w-full"></span>
+    <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-rose-600/50 transition-all duration-300 group-hover:w-full"></span>
   </button>
 );
 
@@ -35,7 +35,7 @@ const PhotoCard = memo(({ photo, liked, likeCount, onOpen, onToggleLike }) => {
 
   return (
     <div
-      className="relative group rounded-xl overflow-hidden cursor-pointer bg-white/5 border border-white/10 hover:border-indigo-500/40 transition-all duration-300"
+      className="relative group rounded-xl overflow-hidden cursor-pointer bg-white/5 border border-white/10 hover:border-red-600/40 transition-all duration-300"
       onClick={() => onOpen(photo)}
       onDoubleClick={handleDoubleClick}
     >
@@ -59,7 +59,7 @@ const PhotoCard = memo(({ photo, liked, likeCount, onOpen, onToggleLike }) => {
             onAnimationComplete={() => setPulse(false)}
             className="absolute inset-0 flex items-center justify-center pointer-events-none"
           >
-            <Heart className="w-16 h-16 text-pink-500 drop-shadow-lg" fill="currentColor" />
+            <Heart className="w-16 h-16 text-red-600 drop-shadow-lg" fill="currentColor" />
           </motion.div>
         )}
       </AnimatePresence>
@@ -72,7 +72,7 @@ const PhotoCard = memo(({ photo, liked, likeCount, onOpen, onToggleLike }) => {
         <div className="flex items-center gap-3 text-xs text-gray-300">
           <button
             onClick={(e) => { e.stopPropagation(); onToggleLike(photo.id); }}
-            className={`flex items-center gap-1 transition-colors ${liked ? "text-pink-400" : "text-gray-300 hover:text-pink-400"}`}
+            className={`flex items-center gap-1 transition-colors ${liked ? "text-red-500" : "text-gray-300 hover:text-red-500"}`}
           >
             <Heart className="w-3.5 h-3.5" fill={liked ? "currentColor" : "none"} />
             {likeCount}
@@ -87,7 +87,7 @@ const PhotoCard = memo(({ photo, liked, likeCount, onOpen, onToggleLike }) => {
 
       {/* Category chip */}
       {photo.category && (
-        <span className="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-black/50 backdrop-blur-sm text-[10px] text-indigo-200 border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity">
+        <span className="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-black/50 backdrop-blur-sm text-[10px] text-red-200 border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity">
           {photo.category}
         </span>
       )}
@@ -185,8 +185,8 @@ const Lightbox = ({ photos, index, onClose, onIndexChange, liked, likeCount, onT
                 onClick={() => onToggleLike(photo.id)}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border transition-all ${
                   isLiked
-                    ? "bg-pink-500/20 border-pink-500/40 text-pink-300"
-                    : "bg-white/5 border-white/15 text-gray-300 hover:border-pink-400/40 hover:text-pink-300"
+                    ? "bg-red-600/20 border-red-600/40 text-red-300"
+                    : "bg-white/5 border-white/15 text-gray-300 hover:border-red-500/40 hover:text-red-300"
                 }`}
               >
                 <Heart className="w-4 h-4" fill={isLiked ? "currentColor" : "none"} />
@@ -336,7 +336,7 @@ const PhotoGallery = () => {
               onClick={() => { setActiveCategory(cat); setShowAll(false); }}
               className={`px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-medium border transition-all duration-200 ${
                 activeCategory === cat
-                  ? "bg-gradient-to-r from-indigo-500/25 to-purple-500/20 border-indigo-500/40 text-white"
+                  ? "bg-gradient-to-r from-red-600/25 to-rose-600/20 border-red-600/40 text-white"
                   : "border-white/10 text-gray-400 hover:text-gray-200 hover:border-white/20"
               }`}
             >

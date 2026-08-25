@@ -29,16 +29,29 @@ const TypewriterEffect = ({ text }) => {
   );
 };
 
+const WebCorner = ({ className, stroke = "#dc2626" }) => (
+  <svg className={className} viewBox="0 0 200 200" fill="none" stroke={stroke} strokeWidth="1.5">
+    {[...Array(9)].map((_, i) => (
+      <line key={`r-${i}`} x1="0" y1="0" x2={200 * Math.cos((i * Math.PI) / 16)} y2={200 * Math.sin((i * Math.PI) / 16)} />
+    ))}
+    {[18, 38, 62, 90, 122, 158, 198].map((r, i) => (
+      <path key={`a-${i}`} d={`M ${r} 0 A ${r} ${r} 0 0 1 0 ${r}`} />
+    ))}
+  </svg>
+);
+
 const BackgroundEffect = () => (
   <div className="absolute inset-0 overflow-hidden">
-    <div className="absolute inset-0 bg-gradient-to-r from-indigo-600/20 to-purple-600/20 blur-3xl animate-pulse" />
-    <div className="absolute inset-0 bg-gradient-to-tr from-indigo-600/10 via-transparent to-purple-600/10 blur-2xl animate-float" />
+    <div className="absolute inset-0 bg-gradient-to-r from-red-700/20 to-blue-700/20 blur-3xl animate-pulse" />
+    <div className="absolute inset-0 bg-gradient-to-tr from-red-700/10 via-transparent to-blue-700/10 blur-2xl animate-float" />
+    <WebCorner className="absolute -top-16 -left-16 w-72 h-72 opacity-20" stroke="#dc2626" />
+    <WebCorner className="absolute -bottom-16 -right-16 w-72 h-72 opacity-20 rotate-180" stroke="#2563eb" />
   </div>
 );
 
 const IconButton = ({ Icon }) => (
   <div className="relative group hover:scale-110 transition-transform duration-300">
-    <div className="absolute -inset-2 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-full blur opacity-30 group-hover:opacity-75 transition duration-300" />
+    <div className="absolute -inset-2 bg-gradient-to-r from-red-700 to-blue-700 rounded-full blur opacity-30 group-hover:opacity-75 transition duration-300" />
     <div className="relative p-2 sm:p-3 bg-black/50 backdrop-blur-sm rounded-full border border-white/10">
       <Icon className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 text-white" />
     </div>
@@ -94,7 +107,7 @@ const WelcomeScreen = ({ onLoadingComplete }) => {
     <AnimatePresence>
       {isLoading && (
         <motion.div
-          className="fixed inset-0 bg-[#030014]"
+          className="fixed inset-0 bg-[#050303]"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit="exit"
@@ -123,21 +136,21 @@ const WelcomeScreen = ({ onLoadingComplete }) => {
               >
                 <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold space-y-2 sm:space-y-4">
                   <div className="mb-2 sm:mb-4">
-                    <span data-aos="fade-right" data-aos-delay="200" className="inline-block px-2 bg-gradient-to-r from-white via-blue-100 to-purple-200 bg-clip-text text-transparent">
+                    <span data-aos="fade-right" data-aos-delay="200" className="inline-block px-2 bg-gradient-to-r from-white via-blue-200 to-red-300 bg-clip-text text-transparent">
                       Welcome
                     </span>{' '}
-                    <span data-aos="fade-right" data-aos-delay="400" className="inline-block px-2 bg-gradient-to-r from-white via-blue-100 to-purple-200 bg-clip-text text-transparent">
+                    <span data-aos="fade-right" data-aos-delay="400" className="inline-block px-2 bg-gradient-to-r from-white via-blue-200 to-red-300 bg-clip-text text-transparent">
                       To
                     </span>{' '}
-                    <span data-aos="fade-right" data-aos-delay="600" className="inline-block px-2 bg-gradient-to-r from-white via-blue-100 to-purple-200 bg-clip-text text-transparent">
+                    <span data-aos="fade-right" data-aos-delay="600" className="inline-block px-2 bg-gradient-to-r from-white via-blue-200 to-red-300 bg-clip-text text-transparent">
                       My
                     </span>
                   </div>
                   <div>
-                    <span data-aos="fade-up" data-aos-delay="800" className="inline-block px-2 bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                    <span data-aos="fade-up" data-aos-delay="800" className="inline-block px-2 bg-gradient-to-r from-red-700 to-rose-700 bg-clip-text text-transparent">
                       Portfolio
                     </span>{' '}
-                    <span data-aos="fade-up" data-aos-delay="1000" className="inline-block px-2 bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                    <span data-aos="fade-up" data-aos-delay="1000" className="inline-block px-2 bg-gradient-to-r from-red-700 to-rose-700 bg-clip-text text-transparent">
                       Website
                     </span>
                   </div>
@@ -157,10 +170,10 @@ const WelcomeScreen = ({ onLoadingComplete }) => {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-r from-indigo-600/20 to-purple-600/20 rounded-full blur-md group-hover:blur-lg transition-all duration-300" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-red-700/20 to-rose-700/20 rounded-full blur-md group-hover:blur-lg transition-all duration-300" />
                   <div className="relative flex items-center gap-2 text-lg sm:text-xl md:text-2xl">
-                    <Globe className="w-4 h-4 sm:w-5 sm:h-5 text-indigo-600" />
-                    <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                    <Globe className="w-4 h-4 sm:w-5 sm:h-5 text-red-700" />
+                    <span className="bg-gradient-to-r from-red-700 to-rose-700 bg-clip-text text-transparent">
                       <TypewriterEffect text="farez.vercel.app" />
                     </span>
                   </div>

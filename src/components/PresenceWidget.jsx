@@ -79,25 +79,25 @@ export default function PresenceWidget() {
         glow: "shadow-green-500/20"
       },
       coding: {
-        bg: "from-blue-500/15 to-indigo-500/10",
+        bg: "from-blue-500/15 to-red-600/10",
         border: "border-blue-500/30",
         text: "text-blue-400",
         badge: "bg-blue-500/20 border-blue-400/40",
         glow: "shadow-blue-500/20"
       },
       gaming: {
-        bg: "from-red-500/15 to-pink-500/10",
+        bg: "from-red-500/15 to-red-600/10",
         border: "border-red-500/30",
         text: "text-red-400",
         badge: "bg-red-500/20 border-red-400/40",
         glow: "shadow-red-500/20"
       },
       default: {
-        bg: "from-purple-500/15 to-violet-500/10",
-        border: "border-purple-500/30",
-        text: "text-purple-400",
-        badge: "bg-purple-500/20 border-purple-400/40",
-        glow: "shadow-purple-500/20"
+        bg: "from-rose-600/15 to-rose-600/10",
+        border: "border-rose-600/30",
+        text: "text-rose-500",
+        badge: "bg-rose-600/20 border-rose-500/40",
+        glow: "shadow-rose-600/20"
       }
     };
     return colors[type] || colors.default;

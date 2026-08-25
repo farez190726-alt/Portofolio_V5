@@ -25,9 +25,9 @@ import {
 const BUCKET = "project-images";
 
 const swalDark = {
-  background: "#0a0a1a",
+  background: "#0d0505",
   color: "#e5e7eb",
-  confirmButtonColor: "#6366f1",
+  confirmButtonColor: "#2563eb",
   cancelButtonColor: "rgba(255,255,255,0.1)",
 };
 
@@ -54,7 +54,7 @@ const confirmDelete = (text) =>
 
 const Card = ({ children, className = "" }) => (
   <div className={`relative group ${className}`}>
-    <div className="absolute -inset-0.5 bg-gradient-to-r from-[#6366f1] to-[#a855f7] rounded-2xl blur opacity-10 group-hover:opacity-25 transition duration-500" />
+    <div className="absolute -inset-0.5 bg-gradient-to-r from-[#2563eb] to-[#dc2626] rounded-2xl blur opacity-10 group-hover:opacity-25 transition duration-500" />
     <div className="relative bg-white/5 backdrop-blur-xl border border-white/12 rounded-2xl h-full">
       {children}
     </div>
@@ -70,7 +70,7 @@ const InputField = ({
   required = false,
 }) => (
   <div className="space-y-1.5">
-    <label className="text-xs text-indigo-300/70 uppercase tracking-wider font-medium">
+    <label className="text-xs text-red-300/70 uppercase tracking-wider font-medium">
       {label}
     </label>
     <input
@@ -79,14 +79,14 @@ const InputField = ({
       onChange={onChange}
       placeholder={placeholder}
       required={required}
-      className="w-full bg-[#0d0d22] border border-white/10 rounded-xl px-4 py-2.5 text-gray-200 placeholder-gray-600 text-sm outline-none focus:border-indigo-500/60 focus:ring-1 focus:ring-indigo-500/20 transition-all"
+      className="w-full bg-[#140505] border border-white/10 rounded-xl px-4 py-2.5 text-gray-200 placeholder-gray-600 text-sm outline-none focus:border-red-600/60 focus:ring-1 focus:ring-red-600/20 transition-all"
     />
   </div>
 );
 
 const SkeletonCard = () => (
   <div className="relative">
-    <div className="absolute -inset-0.5 bg-gradient-to-r from-[#6366f1] to-[#a855f7] rounded-2xl blur opacity-10" />
+    <div className="absolute -inset-0.5 bg-gradient-to-r from-[#2563eb] to-[#dc2626] rounded-2xl blur opacity-10" />
     <div className="relative bg-white/5 border border-white/12 rounded-2xl p-4 flex flex-col gap-3">
       <div className="w-full aspect-[16/8] bg-white/5 animate-pulse rounded-xl" />
       <div className="h-4 bg-white/5 animate-pulse rounded-lg w-2/3" />
@@ -149,7 +149,7 @@ const ProjectCard = ({ project, onDelete, onEdit }) => {
             {project.TechStack.map((t) => (
               <span
                 key={t}
-                className="px-2 py-0.5 rounded-full bg-indigo-500/15 border border-indigo-500/25 text-indigo-300 text-xs"
+                className="px-2 py-0.5 rounded-full bg-red-600/15 border border-red-600/25 text-red-300 text-xs"
               >
                 {t}
               </span>
@@ -182,7 +182,7 @@ const ProjectCard = ({ project, onDelete, onEdit }) => {
           <div className="flex gap-2">
             <button
               onClick={() => onEdit(project)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-indigo-500/25 text-indigo-400 hover:bg-indigo-500/10 text-xs transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-red-600/25 text-red-500 hover:bg-red-600/10 text-xs transition-colors"
             >
               <Pencil className="w-3 h-3" /> Edit
             </button>
@@ -209,8 +209,8 @@ const Modal = ({ title, onClose, children }) => (
       className="relative z-10 w-full max-w-2xl flex flex-col"
       style={{ maxHeight: "calc(100vh - 24px)" }}
     >
-      <div className="absolute -inset-0.5 bg-gradient-to-r from-[#6366f1] to-[#a855f7] rounded-2xl blur opacity-20 pointer-events-none" />
-      <div className="relative bg-[#0a0a1a] border border-white/12 rounded-2xl flex flex-col overflow-hidden">
+      <div className="absolute -inset-0.5 bg-gradient-to-r from-[#2563eb] to-[#dc2626] rounded-2xl blur opacity-20 pointer-events-none" />
+      <div className="relative bg-[#0d0505] border border-white/12 rounded-2xl flex flex-col overflow-hidden">
         {/* Fixed header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-white/8 shrink-0">
           <h2 className="text-base font-semibold text-white">{title}</h2>
@@ -258,7 +258,7 @@ const GalleryThumb = ({ item, index, onRemove, onMakeCover, dragHandlers }) => (
         type="button"
         title="Set as cover"
         onClick={() => onMakeCover(index)}
-        className="p-1 rounded bg-indigo-500/80 hover:bg-indigo-500 text-white"
+        className="p-1 rounded bg-red-600/80 hover:bg-red-600 text-white"
       >
         <Star className="w-3 h-3" />
       </button>
@@ -429,7 +429,7 @@ const ProjectForm = ({ initial, onSubmit, onCancel, submitLabel = "Save Project"
         </div>
 
         <div className="sm:col-span-2 space-y-1.5">
-          <label className="text-xs text-indigo-300/70 uppercase tracking-wider font-medium">
+          <label className="text-xs text-red-300/70 uppercase tracking-wider font-medium">
             Description
           </label>
           <textarea
@@ -437,7 +437,7 @@ const ProjectForm = ({ initial, onSubmit, onCancel, submitLabel = "Save Project"
             onChange={set("Description")}
             placeholder="Short description of the project"
             rows={3}
-            className="w-full bg-[#0d0d22] border border-white/10 rounded-xl px-4 py-2.5 text-gray-200 placeholder-gray-600 text-sm outline-none focus:border-indigo-500/60 focus:ring-1 focus:ring-indigo-500/20 transition-all resize-none"
+            className="w-full bg-[#140505] border border-white/10 rounded-xl px-4 py-2.5 text-gray-200 placeholder-gray-600 text-sm outline-none focus:border-red-600/60 focus:ring-1 focus:ring-red-600/20 transition-all resize-none"
           />
         </div>
 
@@ -468,10 +468,10 @@ const ProjectForm = ({ initial, onSubmit, onCancel, submitLabel = "Save Project"
 
         {/* Cover image */}
         <div className="sm:col-span-2 space-y-1.5">
-          <label className="text-xs text-indigo-300/70 uppercase tracking-wider font-medium">
+          <label className="text-xs text-red-300/70 uppercase tracking-wider font-medium">
             Cover Image
           </label>
-          <label className="flex items-center gap-4 w-full bg-[#0d0d22] border border-dashed border-white/15 rounded-xl px-4 py-4 cursor-pointer hover:border-indigo-500/40 hover:bg-white/4 transition-all">
+          <label className="flex items-center gap-4 w-full bg-[#140505] border border-dashed border-white/15 rounded-xl px-4 py-4 cursor-pointer hover:border-red-600/40 hover:bg-white/4 transition-all">
             {cover.preview ? (
               <img
                 src={cover.preview}
@@ -498,10 +498,10 @@ const ProjectForm = ({ initial, onSubmit, onCancel, submitLabel = "Save Project"
         {/* Gallery */}
         <div className="sm:col-span-2 space-y-2">
           <div className="flex items-center justify-between">
-            <label className="text-xs text-indigo-300/70 uppercase tracking-wider font-medium">
+            <label className="text-xs text-red-300/70 uppercase tracking-wider font-medium">
               Gallery ({gallery.length} photo{gallery.length !== 1 ? "s" : ""})
             </label>
-            <label className="flex items-center gap-1.5 text-xs text-indigo-400 hover:text-indigo-300 cursor-pointer transition-colors">
+            <label className="flex items-center gap-1.5 text-xs text-red-500 hover:text-red-300 cursor-pointer transition-colors">
               <Plus className="w-3.5 h-3.5" /> Add photos
               <input
                 type="file"
@@ -517,7 +517,7 @@ const ProjectForm = ({ initial, onSubmit, onCancel, submitLabel = "Save Project"
           </div>
 
           {gallery.length > 0 ? (
-            <div className="flex flex-wrap gap-2 p-3 bg-[#0d0d22] border border-white/10 rounded-xl">
+            <div className="flex flex-wrap gap-2 p-3 bg-[#140505] border border-white/10 rounded-xl">
               {gallery.map((item, i) => (
                 <GalleryThumb
                   key={item.id}
@@ -534,7 +534,7 @@ const ProjectForm = ({ initial, onSubmit, onCancel, submitLabel = "Save Project"
               ))}
             </div>
           ) : (
-            <label className="flex flex-col items-center justify-center w-full min-h-[90px] rounded-xl border border-dashed border-white/12 bg-white/4 hover:border-indigo-500/35 hover:bg-white/7 cursor-pointer transition-all text-center p-4">
+            <label className="flex flex-col items-center justify-center w-full min-h-[90px] rounded-xl border border-dashed border-white/12 bg-white/4 hover:border-red-600/35 hover:bg-white/7 cursor-pointer transition-all text-center p-4">
               <ImagePlus className="w-5 h-5 text-gray-600 mb-1.5" />
               <p className="text-xs text-gray-400">
                 Add extra photos shown on the project detail page
@@ -566,12 +566,12 @@ const ProjectForm = ({ initial, onSubmit, onCancel, submitLabel = "Save Project"
           Cancel
         </button>
         <button type="submit" disabled={uploading} className="relative group/s">
-          <div className="absolute -inset-0.5 bg-gradient-to-r from-[#4f52c9] to-[#8644c5] rounded-xl opacity-60 blur group-hover/s:opacity-100 transition duration-300" />
-          <div className="relative flex items-center gap-2 px-5 py-2 bg-[#030014] rounded-xl border border-white/10">
+          <div className="absolute -inset-0.5 bg-gradient-to-r from-[#1d4ed8] to-[#b91c1c] rounded-xl opacity-60 blur group-hover/s:opacity-100 transition duration-300" />
+          <div className="relative flex items-center gap-2 px-5 py-2 bg-[#050303] rounded-xl border border-white/10">
             {uploading ? (
               <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
             ) : (
-              <Upload className="w-4 h-4 text-indigo-400" />
+              <Upload className="w-4 h-4 text-red-500" />
             )}
             <span className="text-sm text-gray-200">
               {uploading
@@ -679,9 +679,9 @@ export default function Projects() {
       <div className="flex items-center justify-between gap-4 mb-2 flex-wrap">
         <div className="flex items-center gap-3">
           <div className="relative">
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-[#6366f1] to-[#a855f7] rounded-xl blur opacity-50" />
-            <div className="relative w-9 h-9 bg-[#030014] rounded-xl border border-white/15 flex items-center justify-center">
-              <FolderGit2 className="w-4 h-4 text-indigo-400" />
+            <div className="absolute -inset-0.5 bg-gradient-to-r from-[#2563eb] to-[#dc2626] rounded-xl blur opacity-50" />
+            <div className="relative w-9 h-9 bg-[#050303] rounded-xl border border-white/15 flex items-center justify-center">
+              <FolderGit2 className="w-4 h-4 text-red-500" />
             </div>
           </div>
           <div>
@@ -700,9 +700,9 @@ export default function Projects() {
           onClick={() => setShowCreate(true)}
           className="relative group shrink-0"
         >
-          <div className="absolute -inset-0.5 bg-gradient-to-r from-[#4f52c9] to-[#8644c5] rounded-xl opacity-50 blur group-hover:opacity-80 transition duration-300" />
-          <div className="relative flex items-center gap-2 px-4 py-2.5 bg-[#030014] rounded-xl border border-white/10">
-            <Plus className="w-4 h-4 text-indigo-400" />
+          <div className="absolute -inset-0.5 bg-gradient-to-r from-[#1d4ed8] to-[#b91c1c] rounded-xl opacity-50 blur group-hover:opacity-80 transition duration-300" />
+          <div className="relative flex items-center gap-2 px-4 py-2.5 bg-[#050303] rounded-xl border border-white/10">
+            <Plus className="w-4 h-4 text-red-500" />
             <span className="text-sm text-gray-200">New Project</span>
           </div>
         </button>
@@ -715,7 +715,7 @@ export default function Projects() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search projects or tech stack..."
-          className="w-full bg-white/5 border border-white/10 rounded-xl pl-9 pr-3 py-2 text-sm text-gray-200 placeholder-gray-600 outline-none focus:border-indigo-500/60 focus:ring-1 focus:ring-indigo-500/20 transition-all"
+          className="w-full bg-white/5 border border-white/10 rounded-xl pl-9 pr-3 py-2 text-sm text-gray-200 placeholder-gray-600 outline-none focus:border-red-600/60 focus:ring-1 focus:ring-red-600/20 transition-all"
         />
       </div>
 

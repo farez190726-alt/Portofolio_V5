@@ -11,9 +11,9 @@ import {
 const BUCKET = 'gallery-images'
 
 const swalDark = {
-  background: '#0a0a1a',
+  background: '#0d0505',
   color: '#e5e7eb',
-  confirmButtonColor: '#6366f1',
+  confirmButtonColor: '#2563eb',
   cancelButtonColor: 'rgba(255,255,255,0.1)',
 }
 
@@ -40,7 +40,7 @@ const confirmDelete = (text) =>
 
 const Card = ({ children, className = '' }) => (
   <div className={`relative group ${className}`}>
-    <div className="absolute -inset-0.5 bg-gradient-to-r from-[#6366f1] to-[#a855f7] rounded-2xl blur opacity-10 group-hover:opacity-25 transition duration-500" />
+    <div className="absolute -inset-0.5 bg-gradient-to-r from-[#2563eb] to-[#dc2626] rounded-2xl blur opacity-10 group-hover:opacity-25 transition duration-500" />
     <div className="relative bg-white/5 backdrop-blur-xl border border-white/12 rounded-2xl h-full">
       {children}
     </div>
@@ -49,7 +49,7 @@ const Card = ({ children, className = '' }) => (
 
 const SkeletonCard = () => (
   <div className="relative">
-    <div className="absolute -inset-0.5 bg-gradient-to-r from-[#6366f1] to-[#a855f7] rounded-2xl blur opacity-10" />
+    <div className="absolute -inset-0.5 bg-gradient-to-r from-[#2563eb] to-[#dc2626] rounded-2xl blur opacity-10" />
     <div className="relative bg-white/5 border border-white/12 rounded-2xl overflow-hidden">
       <div className="w-full aspect-square bg-white/5 animate-pulse" />
     </div>
@@ -61,7 +61,7 @@ const PhotoCard = ({ photo, likeCount, onDelete }) => {
 
   return (
     <div className="relative group">
-      <div className="absolute -inset-0.5 bg-gradient-to-r from-[#6366f1] to-[#a855f7] rounded-2xl blur opacity-10 group-hover:opacity-30 transition duration-500" />
+      <div className="absolute -inset-0.5 bg-gradient-to-r from-[#2563eb] to-[#dc2626] rounded-2xl blur opacity-10 group-hover:opacity-30 transition duration-500" />
       <div className="relative bg-white/5 border border-white/12 rounded-2xl overflow-hidden">
         {!imgLoaded && <div className="w-full aspect-square bg-white/5 animate-pulse" />}
         <img
@@ -73,7 +73,7 @@ const PhotoCard = ({ photo, likeCount, onDelete }) => {
         {imgLoaded && (
           <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-3 gap-2">
             {photo.category && (
-              <span className="self-start px-2 py-0.5 rounded-full bg-indigo-500/20 border border-indigo-500/30 text-[10px] text-indigo-200">
+              <span className="self-start px-2 py-0.5 rounded-full bg-red-600/20 border border-red-600/30 text-[10px] text-red-200">
                 {photo.category}
               </span>
             )}
@@ -213,9 +213,9 @@ export default function Gallery() {
       <div className="flex items-center justify-between gap-4 flex-wrap">
         <div className="flex items-center gap-3">
           <div className="relative">
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-[#6366f1] to-[#a855f7] rounded-xl blur opacity-50" />
-            <div className="relative w-9 h-9 bg-[#030014] rounded-xl border border-white/15 flex items-center justify-center">
-              <Camera className="w-4 h-4 text-indigo-400" />
+            <div className="absolute -inset-0.5 bg-gradient-to-r from-[#2563eb] to-[#dc2626] rounded-xl blur opacity-50" />
+            <div className="relative w-9 h-9 bg-[#050303] rounded-xl border border-white/15 flex items-center justify-center">
+              <Camera className="w-4 h-4 text-red-500" />
             </div>
           </div>
           <div>
@@ -230,8 +230,8 @@ export default function Gallery() {
       {/* Stats */}
       <div className="grid grid-cols-3 gap-3">
         {[
-          { label: 'Photos', value: photos.length, color: 'text-indigo-400' },
-          { label: 'Total Likes', value: totalLikes, color: 'text-pink-400' },
+          { label: 'Photos', value: photos.length, color: 'text-red-500' },
+          { label: 'Total Likes', value: totalLikes, color: 'text-red-500' },
           { label: 'Total Views', value: totalViews, color: 'text-blue-400' },
         ].map((stat) => (
           <Card key={stat.label}>
@@ -250,7 +250,7 @@ export default function Gallery() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search by caption or category..."
-          className="w-full bg-white/5 border border-white/10 rounded-xl pl-9 pr-3 py-2 text-sm text-gray-200 placeholder-gray-600 outline-none focus:border-indigo-500/60 focus:ring-1 focus:ring-indigo-500/20 transition-all"
+          className="w-full bg-white/5 border border-white/10 rounded-xl pl-9 pr-3 py-2 text-sm text-gray-200 placeholder-gray-600 outline-none focus:border-red-600/60 focus:ring-1 focus:ring-red-600/20 transition-all"
         />
       </div>
 
@@ -258,7 +258,7 @@ export default function Gallery() {
       <Card>
         <div className="p-5 sm:p-6 space-y-4">
           <h2 className="text-sm font-semibold text-white flex items-center gap-2">
-            <Plus className="w-4 h-4 text-indigo-400" /> Upload Photos
+            <Plus className="w-4 h-4 text-red-500" /> Upload Photos
           </h2>
 
           <label
@@ -266,12 +266,12 @@ export default function Gallery() {
             onDragLeave={() => setDragOver(false)}
             onDrop={e => { e.preventDefault(); setDragOver(false); handleFiles(e.dataTransfer.files) }}
             className={`flex flex-col items-center justify-center w-full min-h-[160px] rounded-xl border-2 border-dashed cursor-pointer transition-all duration-300 ${
-              dragOver ? 'border-indigo-400/60 bg-indigo-500/10' : 'border-white/12 bg-white/4 hover:border-indigo-500/35 hover:bg-white/7'
+              dragOver ? 'border-red-500/60 bg-red-600/10' : 'border-white/12 bg-white/4 hover:border-red-600/35 hover:bg-white/7'
             }`}
           >
             <div className="text-center space-y-2 p-6">
-              <div className="w-11 h-11 rounded-full bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center mx-auto">
-                <ImageIcon className="w-5 h-5 text-indigo-400" />
+              <div className="w-11 h-11 rounded-full bg-red-600/10 border border-red-600/20 flex items-center justify-center mx-auto">
+                <ImageIcon className="w-5 h-5 text-red-500" />
               </div>
               <p className="text-sm text-gray-300">Drag & drop or click to upload</p>
               <p className="text-xs text-gray-600">Multiple files supported · PNG, JPG, WEBP, max 8MB each</p>
@@ -298,13 +298,13 @@ export default function Gallery() {
                       value={item.caption}
                       onChange={(e) => setPendingField(item.id, 'caption', e.target.value)}
                       placeholder="Caption (optional)"
-                      className="w-full bg-[#0d0d22] border border-white/10 rounded-lg px-2 py-1 text-[11px] text-gray-300 placeholder-gray-600 outline-none focus:border-indigo-500/60"
+                      className="w-full bg-[#140505] border border-white/10 rounded-lg px-2 py-1 text-[11px] text-gray-300 placeholder-gray-600 outline-none focus:border-red-600/60"
                     />
                     <input
                       value={item.category}
                       onChange={(e) => setPendingField(item.id, 'category', e.target.value)}
                       placeholder="Category (e.g. Travel)"
-                      className="w-full bg-[#0d0d22] border border-white/10 rounded-lg px-2 py-1 text-[11px] text-gray-300 placeholder-gray-600 outline-none focus:border-indigo-500/60"
+                      className="w-full bg-[#140505] border border-white/10 rounded-lg px-2 py-1 text-[11px] text-gray-300 placeholder-gray-600 outline-none focus:border-red-600/60"
                     />
                   </div>
                 ))}
@@ -320,9 +320,9 @@ export default function Gallery() {
                     Clear
                   </button>
                   <button onClick={uploadAll} disabled={uploading} className="relative group/u">
-                    <div className="absolute -inset-0.5 bg-gradient-to-r from-[#4f52c9] to-[#8644c5] rounded-xl opacity-60 blur group-hover/u:opacity-100 transition duration-300" />
-                    <div className="relative flex items-center gap-2 px-4 py-1.5 bg-[#030014] rounded-xl border border-white/10">
-                      {uploading ? <div className="w-3.5 h-3.5 border-2 border-white/20 border-t-white rounded-full animate-spin" /> : <Upload className="w-3.5 h-3.5 text-indigo-400" />}
+                    <div className="absolute -inset-0.5 bg-gradient-to-r from-[#1d4ed8] to-[#b91c1c] rounded-xl opacity-60 blur group-hover/u:opacity-100 transition duration-300" />
+                    <div className="relative flex items-center gap-2 px-4 py-1.5 bg-[#050303] rounded-xl border border-white/10">
+                      {uploading ? <div className="w-3.5 h-3.5 border-2 border-white/20 border-t-white rounded-full animate-spin" /> : <Upload className="w-3.5 h-3.5 text-red-500" />}
                       <span className="text-xs text-gray-200">
                         {uploading ? `Uploading ${progress?.done ?? 0}/${progress?.total ?? pending.length}...` : 'Upload all'}
                       </span>

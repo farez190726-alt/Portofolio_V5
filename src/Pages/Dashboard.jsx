@@ -29,9 +29,9 @@ export default function Dashboard() {
       {/* Logo */}
       <div className="flex items-center gap-3 px-1 shrink-0">
         <div className="relative">
-          <div className="absolute -inset-0.5 bg-gradient-to-r from-[#6366f1] to-[#a855f7] rounded-xl blur opacity-50" />
-          <div className="relative w-9 h-9 bg-[#030014] rounded-xl border border-white/15 flex items-center justify-center">
-            <LayoutDashboard className="w-4 h-4 text-indigo-400" />
+          <div className="absolute -inset-0.5 bg-gradient-to-r from-[#2563eb] to-[#dc2626] rounded-xl blur opacity-50" />
+          <div className="relative w-9 h-9 bg-[#050303] rounded-xl border border-white/15 flex items-center justify-center">
+            <LayoutDashboard className="w-4 h-4 text-red-500" />
           </div>
         </div>
         <div>
@@ -41,9 +41,9 @@ export default function Dashboard() {
       </div>
 
       {/* Badge */}
-      <div className="shrink-0 px-3 py-2 rounded-full bg-indigo-500/10 border border-indigo-500/20 flex items-center gap-2">
-        <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse" />
-        <span className="text-indigo-300 text-xs font-medium">Portfolio Manager</span>
+      <div className="shrink-0 px-3 py-2 rounded-full bg-red-600/10 border border-red-600/20 flex items-center gap-2">
+        <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
+        <span className="text-red-300 text-xs font-medium">Portfolio Manager</span>
       </div>
 
       {/* Nav */}
@@ -58,13 +58,13 @@ export default function Dashboard() {
               onClick={() => setSidebarOpen(false)}
               className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 text-sm font-medium shrink-0 ${
                 active
-                  ? 'bg-gradient-to-r from-indigo-500/20 to-purple-500/15 border border-indigo-500/30 text-white'
+                  ? 'bg-gradient-to-r from-red-600/20 to-rose-600/15 border border-red-600/30 text-white'
                   : 'text-gray-400 hover:text-gray-200 hover:bg-white/5 border border-transparent'
               }`}
             >
-              <Icon className={`w-4 h-4 shrink-0 ${active ? 'text-indigo-400' : ''}`} />
+              <Icon className={`w-4 h-4 shrink-0 ${active ? 'text-red-500' : ''}`} />
               {label}
-              {active && <span className="ml-auto w-1.5 h-1.5 rounded-full bg-indigo-400" />}
+              {active && <span className="ml-auto w-1.5 h-1.5 rounded-full bg-red-500" />}
             </Link>
           )
         })}
@@ -102,7 +102,7 @@ export default function Dashboard() {
 
       {/* Sidebar - mobile drawer */}
       <aside
-        className={`fixed inset-y-0 left-0 z-30 w-60 flex flex-col border-r border-white/8 bg-[#0a0a1a] backdrop-blur-xl transition-transform duration-300 lg:hidden ${
+        className={`fixed inset-y-0 left-0 z-30 w-60 flex flex-col border-r border-white/8 bg-[#0d0505] backdrop-blur-xl transition-transform duration-300 lg:hidden ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
