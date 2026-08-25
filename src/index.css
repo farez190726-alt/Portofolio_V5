@@ -197,3 +197,142 @@ body {
 	user-select: none;
 	cursor: default;
   } */
+/* ===================================================================== */
+/* SPIDER-MAN THEME — new interactive elements                           */
+/* ===================================================================== */
+
+/* Site-wide "web crosshair" cursor */
+body {
+	cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26"><circle cx="13" cy="13" r="3" fill="%23dc2626"/><circle cx="13" cy="13" r="9" fill="none" stroke="%23dc2626" stroke-width="1.4" opacity="0.65"/></svg>') 13 13, auto;
+}
+a,
+button,
+[role="button"],
+input[type="submit"] {
+	cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30"><circle cx="15" cy="15" r="3.4" fill="%232563eb"/><circle cx="15" cy="15" r="11" fill="none" stroke="%23dc2626" stroke-width="1.6" opacity="0.75"/></svg>') 15 15, pointer;
+}
+
+/* Spidey-sense: pulsating tingle glow for interactive elements */
+.spidey-sense {
+	transition: filter 0.3s ease, transform 0.2s ease;
+}
+.spidey-sense:hover,
+.spidey-sense:focus-visible {
+	animation: spidey-tingle 0.7s ease-in-out infinite;
+}
+@keyframes spidey-tingle {
+	0%,
+	100% {
+		filter: drop-shadow(0 0 6px rgba(220, 38, 38, 0.45));
+	}
+	50% {
+		filter: drop-shadow(0 0 14px rgba(37, 99, 235, 0.6));
+	}
+}
+
+/* Web-shooter click effect */
+.web-shot {
+	position: fixed;
+	z-index: 9999;
+	pointer-events: none;
+	width: 90px;
+	height: 90px;
+	transform: translate(-50%, -50%) scale(0.15);
+	opacity: 0.95;
+	animation: web-shoot-expand 0.6s ease-out forwards;
+}
+@keyframes web-shoot-expand {
+	0% {
+		transform: translate(-50%, -50%) scale(0.1);
+		opacity: 0.95;
+	}
+	100% {
+		transform: translate(-50%, -50%) scale(1.25);
+		opacity: 0;
+	}
+}
+
+/* Spidey logo gentle float/pulse (loading screen etc) */
+@keyframes spidey-pulse {
+	0%,
+	100% {
+		transform: scale(1) rotate(0deg);
+	}
+	50% {
+		transform: scale(1.07) rotate(-3deg);
+	}
+}
+.animate-spidey-pulse {
+	animation: spidey-pulse 2.2s ease-in-out infinite;
+}
+
+/* Web-swing easter egg: Spider-Man swings across the screen */
+.web-swing-figure {
+	position: fixed;
+	width: 96px;
+	height: 96px;
+	z-index: 9998;
+	pointer-events: none;
+	border-radius: 9999px;
+	box-shadow: 0 0 24px rgba(220, 38, 38, 0.55);
+	animation: web-swing-path 1.6s cubic-bezier(0.36, 0.07, 0.19, 0.97) forwards;
+}
+@keyframes web-swing-path {
+	0% {
+		top: -12%;
+		left: -8%;
+		transform: rotate(-25deg) scale(0.55);
+		opacity: 0;
+	}
+	15% {
+		opacity: 1;
+	}
+	50% {
+		top: 38%;
+		left: 46%;
+		transform: rotate(12deg) scale(1.05);
+	}
+	100% {
+		top: 106%;
+		left: 104%;
+		transform: rotate(35deg) scale(0.65);
+		opacity: 0;
+	}
+}
+.web-swing-line {
+	position: fixed;
+	z-index: 9997;
+	pointer-events: none;
+	top: -5%;
+	left: 6%;
+	width: 2px;
+	height: 55%;
+	background: linear-gradient(to bottom, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0));
+	transform-origin: top center;
+	animation: web-line-fade 1.6s ease-out forwards;
+}
+@keyframes web-line-fade {
+	0% {
+		opacity: 0;
+	}
+	20% {
+		opacity: 0.75;
+	}
+	70% {
+		opacity: 0.4;
+	}
+	100% {
+		opacity: 0;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.spidey-sense:hover,
+	.spidey-sense:focus-visible,
+	.animate-spidey-pulse,
+	.web-shot,
+	.web-swing-figure,
+	.web-swing-line {
+		animation: none !important;
+	}
+}
