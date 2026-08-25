@@ -142,9 +142,9 @@ const WelcomeScreen = ({ onLoadingComplete }) => {
                 data-aos-delay="100"
               >
                 <img
-                  src="/spiderman/spidey-logo.png"
+                  src="/spiderman/spidey-logo-horizontal.png"
                   alt="Spider-Man"
-                  className="w-14 sm:w-16 md:w-20 h-auto animate-spidey-pulse drop-shadow-[0_0_16px_rgba(220,38,38,0.5)]"
+                  className="w-40 sm:w-52 md:w-64 h-auto animate-spidey-pulse drop-shadow-[0_0_16px_rgba(220,38,38,0.5)]"
                 />
               </motion.div>
 

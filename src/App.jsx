@@ -10,6 +10,7 @@ import { AnimatePresence } from "framer-motion";
 import Footer from "./components/Footer";
 import WebShooterCursor from "./components/WebShooterCursor";
 import WebSwingEasterEgg from "./components/WebSwingEasterEgg";
+import ScrollWebSwing from "./components/ScrollWebSwing";
 
 import Login from "./Pages/Login";
 import Dashboard from "./Pages/Dashboard";
@@ -35,7 +36,7 @@ const LandingPage = ({ showWelcome, setShowWelcome }) => {
       {!showWelcome && (
         <>
           <Navbar />
-      
+          <ScrollWebSwing />
           <Home />
           <About />
           <Suspense fallback={<div className="h-20" />}>

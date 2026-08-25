@@ -336,3 +336,76 @@ input[type="submit"] {
 		animation: none !important;
 	}
 }
+
+/* ===================================================================== */
+/* SPIDER-MAN THEME — Web-Sling Scroll Rail                              */
+/* ===================================================================== */
+.web-scroll-rail {
+	position: fixed;
+	right: 18px;
+	top: 50%;
+	transform: translateY(-50%);
+	z-index: 60;
+	flex-direction: column;
+	align-items: center;
+	gap: 10px;
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 0.4s ease;
+}
+.web-scroll-rail-visible {
+	opacity: 1;
+	pointer-events: auto;
+}
+.web-scroll-track {
+	position: relative;
+	width: 3px;
+	height: 220px;
+	background: linear-gradient(to bottom, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02));
+	border-radius: 999px;
+}
+.web-scroll-fill {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	background: linear-gradient(to bottom, #dc2626, #2563eb);
+	border-radius: 999px;
+	transition: height 0.1s linear;
+}
+.web-scroll-thwip {
+	position: absolute;
+	left: 50%;
+	width: 34px;
+	height: 34px;
+	transform: translate(-50%, -50%);
+	border-radius: 50%;
+	border: 2px solid rgba(255, 255, 255, 0.5);
+	overflow: hidden;
+	padding: 0;
+	cursor: pointer;
+	background: #050303;
+	box-shadow: 0 0 12px rgba(220, 38, 38, 0.5);
+	transition: top 0.1s linear, transform 0.2s ease;
+}
+.web-scroll-thwip:hover,
+.web-scroll-thwip:focus-visible {
+	transform: translate(-50%, -50%) scale(1.15);
+}
+.web-scroll-thwip img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: block;
+}
+.web-scroll-pct {
+	font-size: 10px;
+	color: rgba(255, 255, 255, 0.45);
+	letter-spacing: 0.05em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.web-scroll-thwip {
+		transition: none;
+	}
+}

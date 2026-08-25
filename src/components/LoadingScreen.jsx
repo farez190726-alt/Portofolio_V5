@@ -7,9 +7,9 @@ const LoadingScreen = () => {
         <div className="absolute -inset-4 bg-gradient-to-r from-[#2563eb] to-[#dc2626] rounded-full opacity-20 blur-2xl animate-pulse"></div>
         <div className="relative flex flex-col items-center gap-4 p-8">
           <img
-            src="/spiderman/spidey-logo.png"
+            src="/spiderman/spidey-logo-horizontal.png"
             alt="Spider-Man"
-            className="w-16 sm:w-20 h-auto animate-spidey-pulse drop-shadow-[0_0_18px_rgba(220,38,38,0.55)]"
+            className="w-36 sm:w-44 h-auto animate-spidey-pulse drop-shadow-[0_0_18px_rgba(220,38,38,0.55)]"
           />
           <div className="w-12 h-12 rounded-full border-4 border-t-transparent border-[#2563eb] animate-spin"></div>
           <div className="relative">
