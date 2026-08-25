@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import WebTrailCanvas from "./WebTrailCanvas";
 import CrawlingSpider from "./CrawlingSpider";
+import VillainCatchGame from "./VillainCatchGame";
 
 const STORAGE_KEY = "spidey-mode-enabled";
 
 const SpideyModeToggle = () => {
   const [active, setActive] = useState(false);
   const [reduceMotion, setReduceMotion] = useState(false);
+  const [showHint, setShowHint] = useState(false);
 
   useEffect(() => {
     try {
@@ -30,6 +32,12 @@ const SpideyModeToggle = () => {
     } catch (e) {
       /* localStorage unavailable, ignore */
     }
+
+    if (active) {
+      setShowHint(true);
+      const t = window.setTimeout(() => setShowHint(false), 4200);
+      return () => clearTimeout(t);
+    }
   }, [active]);
 
   return (
@@ -45,11 +53,18 @@ const SpideyModeToggle = () => {
         <span>{active ? "Spidey Mode: ON" : "Spidey Mode"}</span>
       </button>
 
+      {active && showHint && (
+        <div className="spidey-hint" role="status">
+          🕷️ Spidey Mode aktif! Klik penjahat yang muncul sebelum mereka kabur.
+        </div>
+      )}
+
       {active && !reduceMotion && (
         <>
           <div className="spidey-vignette" aria-hidden="true" />
           <WebTrailCanvas />
           <CrawlingSpider />
+          <VillainCatchGame />
         </>
       )}
     </>
@@ -57,3 +72,4 @@ const SpideyModeToggle = () => {
 };
 
 export default SpideyModeToggle;
+

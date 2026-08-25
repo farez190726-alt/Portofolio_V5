@@ -47,7 +47,7 @@ const BackgroundEffect = () => (
     <img
       src="/spiderman/web-corner.png"
       alt=""
-      className="absolute -top-4 -left-4 w-56 sm:w-72 opacity-30 pointer-events-none select-none"
+      className="absolute -top-4 -left-4 w-56 sm:w-72 opacity-30 -scale-x-100 pointer-events-none select-none"
     />
     <WebCorner className="absolute -bottom-16 -right-16 w-72 h-72 opacity-20 rotate-180" stroke="#2563eb" />
   </div>
