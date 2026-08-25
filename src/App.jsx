@@ -11,6 +11,7 @@ import Footer from "./components/Footer";
 import WebShooterCursor from "./components/WebShooterCursor";
 import WebSwingEasterEgg from "./components/WebSwingEasterEgg";
 import ScrollWebSwing from "./components/ScrollWebSwing";
+import SpideyModeToggle from "./components/SpideyModeToggle";
 
 import Login from "./Pages/Login";
 import Dashboard from "./Pages/Dashboard";
@@ -70,6 +71,7 @@ function App() {
 </div>
       <WebShooterCursor />
       <WebSwingEasterEgg />
+      <SpideyModeToggle />
       <BrowserRouter>
         <Routes>
           {/* PUBLIC */}
