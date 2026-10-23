@@ -22,6 +22,7 @@ const ContactPage = lazy(() => import("./Pages/Contact"));
 const ProjectDetails = lazy(() => import("./components/ProjectDetail"));
 const WelcomeScreen = lazy(() => import("./Pages/WelcomeScreen"));
 const NotFoundPage = lazy(() => import("./Pages/404"));
+const WalletApp = lazy(() => import("./Pages/WalletApp"));
 
 const LandingPage = ({ showWelcome, setShowWelcome }) => {
   return (
@@ -86,6 +87,14 @@ function App() {
           />
 
           <Route path="/project/:slug" element={<ProjectPageLayout />} />
+          <Route
+            path="/wallet"
+            element={
+              <Suspense fallback={<div className="min-h-screen bg-slate-100" />}>
+                <WalletApp />
+              </Suspense>
+            }
+          />
 
           {/* AUTH */}
           <Route path="/login" element={<Login />} />
