@@ -3,161 +3,197 @@
 @tailwind utilities;
 
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: "Plus Jakarta Sans", "Poppins", system-ui, -apple-system, sans-serif;
-  scroll-behavior: smooth;
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	  font-family: "Poppins", system-ui, sans-serif;
+	scroll-behavior: smooth;
+	scrollbar-width: thin;
+	scrollbar-color: rgba(220, 38, 38, 0.35) rgba(10, 3, 3, 0.4);
 }
 
-html {
-  transition: background-color 0.4s ease, color 0.4s ease;
-}
-
-html:not(.dark),
-html:not(.dark) body {
-  background-color: #F8FAFC;
-  color: #0F172A;
-}
-
-html.dark,
-html.dark body {
-  background-color: #090D1A;
-  color: #F8FAFC;
-}
-
+html,
 body {
-  overflow-x: hidden;
-  min-height: 100vh;
+	overflow-x: hidden;
+	background: #050303;
+	scroll-behavior: smooth !important;
 }
 
-/* Subtle Modern Ambient Mesh Background Overlay */
-.mesh-overlay {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  opacity: 0.4;
-  background-image: radial-gradient(rgba(148, 163, 184, 0.15) 1px, transparent 1px);
-  background-size: 28px 28px;
+/* Spider-Man web pattern overlay */
+.web-overlay {
+	position: fixed;
+	inset: 0;
+	pointer-events: none;
+	z-index: 0;
+	opacity: 0.05;
+	background-image:
+		repeating-linear-gradient(0deg, rgba(220,38,38,0.5) 0px, transparent 1px, transparent 90px, rgba(220,38,38,0.5) 91px),
+		repeating-linear-gradient(90deg, rgba(220,38,38,0.5) 0px, transparent 1px, transparent 90px, rgba(220,38,38,0.5) 91px);
 }
 
-html.dark .mesh-overlay {
-  opacity: 0.25;
-  background-image: radial-gradient(rgba(0, 240, 255, 0.2) 1px, transparent 1px);
+
+@keyframes blob {
+	0%,
+	100% {
+		transform: translateY(0);
+	}
+	50% {
+		transform: translateY(-20px);
+	}
 }
 
-/* Keyframes */
-@keyframes blobFloat {
-  0%, 100% {
-    transform: translate(0px, 0px) scale(1);
-  }
-  33% {
-    transform: translate(30px, -40px) scale(1.08);
-  }
-  66% {
-    transform: translate(-20px, 20px) scale(0.95);
-  }
+.animate-blob {
+	animation: blob 8s infinite;
 }
 
-@keyframes pulseGlow {
-  0%, 100% {
-    opacity: 0.4;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.8;
-    transform: scale(1.03);
-  }
+.animation-delay-2000 {
+	animation-delay: 2s;
 }
 
-.animate-blob-float {
-  animation: blobFloat 12s infinite ease-in-out;
+.animation-delay-4000 {
+	animation-delay: 4s;
 }
 
-.animate-pulse-glow {
-  animation: pulseGlow 4s infinite ease-in-out;
-}
-
-/* Glassmorphism Component Utilities */
-.glass-panel {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(226, 232, 240, 0.8);
-  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05);
-}
-
-html.dark .glass-panel {
-  background: rgba(18, 24, 41, 0.7);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.4);
-}
-
-.glass-card {
-  background: rgba(255, 255, 255, 0.75);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(241, 245, 249, 0.9);
-  box-shadow: 0 8px 24px -6px rgba(15, 23, 42, 0.06);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.glass-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 16px 32px -8px rgba(15, 23, 42, 0.12);
-  border-color: rgba(6, 182, 212, 0.3);
-}
-
-html.dark .glass-card {
-  background: rgba(19, 26, 46, 0.75);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 8px 24px -6px rgba(0, 0, 0, 0.35);
-}
-
-html.dark .glass-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 16px 32px -8px rgba(0, 240, 255, 0.15);
-  border-color: rgba(0, 240, 255, 0.3);
-}
-
-/* Enhanced Custom Scrollbar */
+/* Enhanced Custom Scrollbar Styles */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-  background-color: transparent;
-}
+	width: 8px;
+	height: 8px;
+	background-color: transparent;
+  }
+  
+  ::-webkit-scrollbar-track {
+	background: rgba(10, 3, 3, 0.4);
+	backdrop-filter: blur(8px);
+	-webkit-backdrop-filter: blur(8px);
+	border: 1px solid rgba(220, 38, 38, 0.15);
+  }
+  
+  ::-webkit-scrollbar-thumb {
+	background: rgba(220, 38, 38, 0.35);
+	backdrop-filter: blur(4px);
+	-webkit-backdrop-filter: blur(4px);
+	border-radius: 20px;
+	border: 1px solid rgba(255, 255, 255, 0.1);
+	box-shadow: 
+	  inset 0 0 20px rgba(37, 99, 235, 0.25),
+	  0 0 10px rgba(220, 38, 38, 0.25);
+	transition: all 0.3s ease;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+	background: rgba(220, 38, 38, 0.55);
+	border: 1px solid rgba(37, 99, 235, 0.35);
+	box-shadow: 
+	  inset 0 0 30px rgba(37, 99, 235, 0.35),
+	  0 0 15px rgba(220, 38, 38, 0.35);
+  }
+  
+  /* When scrollbar is in active/clicked state */
+  ::-webkit-scrollbar-thumb:active {
+	background: rgba(220, 38, 38, 0.65);
+	border: 1px solid rgba(37, 99, 235, 0.45);
+	box-shadow: 
+	  inset 0 0 40px rgba(37, 99, 235, 0.45),
+	  0 0 20px rgba(220, 38, 38, 0.45);
+  }
+  
+  ::-webkit-scrollbar-corner {
+	background: transparent;
+  }
 
-::-webkit-scrollbar-track {
-  background: rgba(241, 245, 249, 0.5);
-}
+  [data-aos] {
+	will-change: transform, opacity !important;
+  }
 
-html.dark ::-webkit-scrollbar-track {
-  background: rgba(15, 23, 42, 0.5);
-}
 
-::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.4);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  border-radius: 9999px;
-  border: 2px solid transparent;
-  background-clip: content-box;
-  transition: all 0.3s ease;
-}
 
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(6, 182, 212, 0.6);
-}
+ @keyframes shine {
+  from {
+	     left: -100%;
+  }
+	  to {
+	    left: 200%;
+	   }
+	 }
+	 .animate-shine {
+   animation: shine 1.5s ease-in-out infinite;
+ }
 
-html.dark ::-webkit-scrollbar-thumb {
-  background: rgba(51, 65, 85, 0.6);
-}
+  
+/*   @media (prefers-color-scheme: dark) {
+	::-webkit-scrollbar-track {
+	  background: rgba(3, 0, 20, 0.6);
+	}
+  } */
 
-html.dark ::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 240, 255, 0.6);
-}
+
+/* 
+  .container {
+	width: 100%;
+	height: 100%;
+  }
+  
+  .main > div {
+	position: absolute;
+	will-change: transform;
+	border-radius: 50%;
+	background: lightcoral;
+	box-shadow: 10px 10px 5px 0px rgba(0, 0, 0, 0.75);
+	opacity: 0.6;
+  }
+  
+  .main > div:nth-child(1) {
+	width: 60px;
+	height: 60px;
+  }
+  
+  .main > div:nth-child(2) {
+	width: 125px;
+	height: 125px;
+  }
+  
+  .main > div:nth-child(3) {
+	width: 75px;
+	height: 75px;
+  }
+  
+  .main > div::after {
+	content: '';
+	position: absolute;
+	top: 20px;
+	left: 20px;
+	width: 20px;
+	height: 20px;
+	border-radius: 50%;
+	background: rgba(255, 0, 0, 0.8);
+  }
+  
+  .main > div:nth-child(2)::after {
+	top: 35px;
+	left: 35px;
+	width: 35px;
+	height: 35px;
+  }
+  
+  .main > div:nth-child(3)::after {
+	top: 25px;
+	left: 25px;
+	width: 25px;
+	height: 25px;
+  }
+  
+  .main {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	filter: url('#blob');
+	overflow: hidden;
+	background: transparent;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	cursor: default;
+  } */

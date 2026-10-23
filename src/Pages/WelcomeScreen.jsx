@@ -44,11 +44,7 @@ const BackgroundEffect = () => (
   <div className="absolute inset-0 overflow-hidden">
     <div className="absolute inset-0 bg-gradient-to-r from-red-700/20 to-blue-700/20 blur-3xl animate-pulse" />
     <div className="absolute inset-0 bg-gradient-to-tr from-red-700/10 via-transparent to-blue-700/10 blur-2xl animate-float" />
-    <img
-      src="/spiderman/web-corner.png"
-      alt=""
-      className="absolute -top-4 -left-4 w-56 sm:w-72 opacity-30 pointer-events-none select-none"
-    />
+    <WebCorner className="absolute -top-16 -left-16 w-72 h-72 opacity-20" stroke="#dc2626" />
     <WebCorner className="absolute -bottom-16 -right-16 w-72 h-72 opacity-20 rotate-180" stroke="#2563eb" />
   </div>
 );
@@ -131,20 +127,6 @@ const WelcomeScreen = ({ onLoadingComplete }) => {
                     <IconButton Icon={Icon} />
                   </div>
                 ))}
-              </motion.div>
-
-              {/* Spider-Man badge */}
-              <motion.div
-                className="flex justify-center mb-4 sm:mb-6"
-                variants={childVariants}
-                data-aos="zoom-in"
-                data-aos-delay="100"
-              >
-                <img
-                  src="/spiderman/spidey-logo-horizontal.png"
-                  alt="Spider-Man"
-                  className="w-40 sm:w-52 md:w-64 h-auto animate-spidey-pulse drop-shadow-[0_0_16px_rgba(220,38,38,0.5)]"
-                />
               </motion.div>
 
               {/* Welcome Text */}
