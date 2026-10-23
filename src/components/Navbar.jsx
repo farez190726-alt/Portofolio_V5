@@ -65,6 +65,10 @@ const Navbar = () => {
         setIsOpen(false);
     };
 
+    const triggerWebSwing = () => {
+        window.dispatchEvent(new Event("spidey-swing"));
+    };
+
     return (
         <nav
             className={`fixed w-full top-0 z-50 transition-all duration-500 ${
@@ -81,10 +85,21 @@ const Navbar = () => {
                     <div className="flex-shrink-0">
                         <a
                             href="#Home"
-                            onClick={(e) => scrollToSection(e, "#Home")}
-                            className="text-xl font-bold bg-gradient-to-r from-[#dc2626] to-[#2563eb] bg-clip-text text-transparent"
+                            onClick={(e) => {
+                                scrollToSection(e, "#Home");
+                                triggerWebSwing();
+                            }}
+                            className="spidey-sense group flex items-center gap-2 text-xl font-bold"
+                            title="Klik untuk aksi spidey!"
                         >
-                            Farez
+                            <img
+                                src="/spiderman/spidey-mask-circle.png"
+                                alt="Spider-Man mask logo"
+                                className="w-8 h-8 rounded-full border border-red-600/40 object-cover transition-transform duration-300 group-hover:rotate-12 group-active:scale-90"
+                            />
+                            <span className="bg-gradient-to-r from-[#dc2626] to-[#2563eb] bg-clip-text text-transparent">
+                                Farez
+                            </span>
                         </a>
                     </div>
         
@@ -96,7 +111,7 @@ const Navbar = () => {
                                     key={item.label}
                                     href={item.href}
                                     onClick={(e) => scrollToSection(e, item.href)}
-                                    className="group relative px-1 py-2 text-sm font-medium"
+                                    className="spidey-sense group relative px-1 py-2 text-sm font-medium"
                                 >
                                     <span
                                         className={`relative z-10 transition-colors duration-300 ${
@@ -151,7 +166,7 @@ const Navbar = () => {
                             key={item.label}
                             href={item.href}
                             onClick={(e) => scrollToSection(e, item.href)}
-                            className={`block px-4 py-3 text-lg font-medium transition-all duration-300 ease ${
+                            className={`spidey-sense block px-4 py-3 text-lg font-medium transition-all duration-300 ease ${
                                 activeSection === item.href.substring(1)
                                     ? "bg-gradient-to-r from-[#2563eb] to-[#dc2626] bg-clip-text text-transparent font-semibold"
                                     : "text-[#e9e2e2] hover:text-white"

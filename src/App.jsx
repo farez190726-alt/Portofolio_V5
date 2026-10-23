@@ -8,6 +8,10 @@ import About from "./Pages/About";
 import AnimatedBackground from "./components/Background";
 import { AnimatePresence } from "framer-motion";
 import Footer from "./components/Footer";
+import WebShooterCursor from "./components/WebShooterCursor";
+import WebSwingEasterEgg from "./components/WebSwingEasterEgg";
+import ScrollWebSwing from "./components/ScrollWebSwing";
+import SpideyModeToggle from "./components/SpideyModeToggle";
 
 import Login from "./Pages/Login";
 import Dashboard from "./Pages/Dashboard";
@@ -33,7 +37,7 @@ const LandingPage = ({ showWelcome, setShowWelcome }) => {
       {!showWelcome && (
         <>
           <Navbar />
-      
+          <ScrollWebSwing />
           <Home />
           <About />
           <Suspense fallback={<div className="h-20" />}>
@@ -65,6 +69,9 @@ function App() {
       <div className="pointer-events-none">
   <AnimatedBackground />
 </div>
+      <WebShooterCursor />
+      <WebSwingEasterEgg />
+      <SpideyModeToggle />
       <BrowserRouter>
         <Routes>
           {/* PUBLIC */}
