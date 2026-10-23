@@ -3,725 +3,161 @@
 @tailwind utilities;
 
 * {
-	margin: 0;
-	padding: 0;
-	box-sizing: border-box;
-	  font-family: "Poppins", system-ui, sans-serif;
-	scroll-behavior: smooth;
-	scrollbar-width: thin;
-	scrollbar-color: rgba(220, 38, 38, 0.35) rgba(10, 3, 3, 0.4);
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Plus Jakarta Sans", "Poppins", system-ui, -apple-system, sans-serif;
+  scroll-behavior: smooth;
 }
 
-html,
+html {
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+html:not(.dark),
+html:not(.dark) body {
+  background-color: #F8FAFC;
+  color: #0F172A;
+}
+
+html.dark,
+html.dark body {
+  background-color: #090D1A;
+  color: #F8FAFC;
+}
+
 body {
-	overflow-x: hidden;
-	background: #050303;
-	scroll-behavior: smooth !important;
+  overflow-x: hidden;
+  min-height: 100vh;
 }
 
-/* Spider-Man web pattern overlay */
-.web-overlay {
-	position: fixed;
-	inset: 0;
-	pointer-events: none;
-	z-index: 0;
-	opacity: 0.05;
-	background-image:
-		repeating-linear-gradient(0deg, rgba(220,38,38,0.5) 0px, transparent 1px, transparent 90px, rgba(220,38,38,0.5) 91px),
-		repeating-linear-gradient(90deg, rgba(220,38,38,0.5) 0px, transparent 1px, transparent 90px, rgba(220,38,38,0.5) 91px);
+/* Subtle Modern Ambient Mesh Background Overlay */
+.mesh-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.4;
+  background-image: radial-gradient(rgba(148, 163, 184, 0.15) 1px, transparent 1px);
+  background-size: 28px 28px;
 }
 
-
-@keyframes blob {
-	0%,
-	100% {
-		transform: translateY(0);
-	}
-	50% {
-		transform: translateY(-20px);
-	}
+html.dark .mesh-overlay {
+  opacity: 0.25;
+  background-image: radial-gradient(rgba(0, 240, 255, 0.2) 1px, transparent 1px);
 }
 
-.animate-blob {
-	animation: blob 8s infinite;
+/* Keyframes */
+@keyframes blobFloat {
+  0%, 100% {
+    transform: translate(0px, 0px) scale(1);
+  }
+  33% {
+    transform: translate(30px, -40px) scale(1.08);
+  }
+  66% {
+    transform: translate(-20px, 20px) scale(0.95);
+  }
 }
 
-.animation-delay-2000 {
-	animation-delay: 2s;
+@keyframes pulseGlow {
+  0%, 100% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.03);
+  }
 }
 
-.animation-delay-4000 {
-	animation-delay: 4s;
+.animate-blob-float {
+  animation: blobFloat 12s infinite ease-in-out;
 }
 
-/* Enhanced Custom Scrollbar Styles */
+.animate-pulse-glow {
+  animation: pulseGlow 4s infinite ease-in-out;
+}
+
+/* Glassmorphism Component Utilities */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05);
+}
+
+html.dark .glass-panel {
+  background: rgba(18, 24, 41, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.4);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(241, 245, 249, 0.9);
+  box-shadow: 0 8px 24px -6px rgba(15, 23, 42, 0.06);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 32px -8px rgba(15, 23, 42, 0.12);
+  border-color: rgba(6, 182, 212, 0.3);
+}
+
+html.dark .glass-card {
+  background: rgba(19, 26, 46, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 24px -6px rgba(0, 0, 0, 0.35);
+}
+
+html.dark .glass-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 32px -8px rgba(0, 240, 255, 0.15);
+  border-color: rgba(0, 240, 255, 0.3);
+}
+
+/* Enhanced Custom Scrollbar */
 ::-webkit-scrollbar {
-	width: 8px;
-	height: 8px;
-	background-color: transparent;
-  }
-  
-  ::-webkit-scrollbar-track {
-	background: rgba(10, 3, 3, 0.4);
-	backdrop-filter: blur(8px);
-	-webkit-backdrop-filter: blur(8px);
-	border: 1px solid rgba(220, 38, 38, 0.15);
-  }
-  
-  ::-webkit-scrollbar-thumb {
-	background: rgba(220, 38, 38, 0.35);
-	backdrop-filter: blur(4px);
-	-webkit-backdrop-filter: blur(4px);
-	border-radius: 20px;
-	border: 1px solid rgba(255, 255, 255, 0.1);
-	box-shadow: 
-	  inset 0 0 20px rgba(37, 99, 235, 0.25),
-	  0 0 10px rgba(220, 38, 38, 0.25);
-	transition: all 0.3s ease;
-  }
-  
-  ::-webkit-scrollbar-thumb:hover {
-	background: rgba(220, 38, 38, 0.55);
-	border: 1px solid rgba(37, 99, 235, 0.35);
-	box-shadow: 
-	  inset 0 0 30px rgba(37, 99, 235, 0.35),
-	  0 0 15px rgba(220, 38, 38, 0.35);
-  }
-  
-  /* When scrollbar is in active/clicked state */
-  ::-webkit-scrollbar-thumb:active {
-	background: rgba(220, 38, 38, 0.65);
-	border: 1px solid rgba(37, 99, 235, 0.45);
-	box-shadow: 
-	  inset 0 0 40px rgba(37, 99, 235, 0.45),
-	  0 0 20px rgba(220, 38, 38, 0.45);
-  }
-  
-  ::-webkit-scrollbar-corner {
-	background: transparent;
-  }
-
-  [data-aos] {
-	will-change: transform, opacity !important;
-  }
-
-
-
- @keyframes shine {
-  from {
-	     left: -100%;
-  }
-	  to {
-	    left: 200%;
-	   }
-	 }
-	 .animate-shine {
-   animation: shine 1.5s ease-in-out infinite;
- }
-
-  
-/*   @media (prefers-color-scheme: dark) {
-	::-webkit-scrollbar-track {
-	  background: rgba(3, 0, 20, 0.6);
-	}
-  } */
-
-
-/* 
-  .container {
-	width: 100%;
-	height: 100%;
-  }
-  
-  .main > div {
-	position: absolute;
-	will-change: transform;
-	border-radius: 50%;
-	background: lightcoral;
-	box-shadow: 10px 10px 5px 0px rgba(0, 0, 0, 0.75);
-	opacity: 0.6;
-  }
-  
-  .main > div:nth-child(1) {
-	width: 60px;
-	height: 60px;
-  }
-  
-  .main > div:nth-child(2) {
-	width: 125px;
-	height: 125px;
-  }
-  
-  .main > div:nth-child(3) {
-	width: 75px;
-	height: 75px;
-  }
-  
-  .main > div::after {
-	content: '';
-	position: absolute;
-	top: 20px;
-	left: 20px;
-	width: 20px;
-	height: 20px;
-	border-radius: 50%;
-	background: rgba(255, 0, 0, 0.8);
-  }
-  
-  .main > div:nth-child(2)::after {
-	top: 35px;
-	left: 35px;
-	width: 35px;
-	height: 35px;
-  }
-  
-  .main > div:nth-child(3)::after {
-	top: 25px;
-	left: 25px;
-	width: 25px;
-	height: 25px;
-  }
-  
-  .main {
-	position: absolute;
-	width: 100%;
-	height: 100%;
-	filter: url('#blob');
-	overflow: hidden;
-	background: transparent;
-	-webkit-touch-callout: none;
-	-webkit-user-select: none;
-	-khtml-user-select: none;
-	-moz-user-select: none;
-	-ms-user-select: none;
-	user-select: none;
-	cursor: default;
-  } */
-/* ===================================================================== */
-/* SPIDER-MAN THEME — new interactive elements                           */
-/* ===================================================================== */
-
-/* Site-wide "web crosshair" cursor */
-body {
-	cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26"><circle cx="13" cy="13" r="3" fill="%23dc2626"/><circle cx="13" cy="13" r="9" fill="none" stroke="%23dc2626" stroke-width="1.4" opacity="0.65"/></svg>') 13 13, auto;
-}
-a,
-button,
-[role="button"],
-input[type="submit"] {
-	cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30"><circle cx="15" cy="15" r="3.4" fill="%232563eb"/><circle cx="15" cy="15" r="11" fill="none" stroke="%23dc2626" stroke-width="1.6" opacity="0.75"/></svg>') 15 15, pointer;
+  width: 8px;
+  height: 8px;
+  background-color: transparent;
 }
 
-/* Spidey-sense: pulsating tingle glow for interactive elements */
-.spidey-sense {
-	transition: filter 0.3s ease, transform 0.2s ease;
-}
-.spidey-sense:hover,
-.spidey-sense:focus-visible {
-	animation: spidey-tingle 0.7s ease-in-out infinite;
-}
-@keyframes spidey-tingle {
-	0%,
-	100% {
-		filter: drop-shadow(0 0 6px rgba(220, 38, 38, 0.45));
-	}
-	50% {
-		filter: drop-shadow(0 0 14px rgba(37, 99, 235, 0.6));
-	}
+::-webkit-scrollbar-track {
+  background: rgba(241, 245, 249, 0.5);
 }
 
-/* Web-shooter click effect */
-.web-shot {
-	position: fixed;
-	z-index: 9999;
-	pointer-events: none;
-	width: 90px;
-	height: 90px;
-	transform: translate(-50%, -50%) scale(0.15);
-	opacity: 0.95;
-	animation: web-shoot-expand 0.6s ease-out forwards;
-}
-@keyframes web-shoot-expand {
-	0% {
-		transform: translate(-50%, -50%) scale(0.1);
-		opacity: 0.95;
-	}
-	100% {
-		transform: translate(-50%, -50%) scale(1.25);
-		opacity: 0;
-	}
+html.dark ::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.5);
 }
 
-/* Spidey logo gentle float/pulse (loading screen etc) */
-@keyframes spidey-pulse {
-	0%,
-	100% {
-		transform: scale(1) rotate(0deg);
-	}
-	50% {
-		transform: scale(1.07) rotate(-3deg);
-	}
-}
-.animate-spidey-pulse {
-	animation: spidey-pulse 2.2s ease-in-out infinite;
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.4);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+  transition: all 0.3s ease;
 }
 
-/* Web-swing easter egg: Spider-Man swings across the screen */
-.web-swing-figure {
-	position: fixed;
-	width: 96px;
-	height: 96px;
-	z-index: 9998;
-	pointer-events: none;
-	border-radius: 9999px;
-	box-shadow: 0 0 24px rgba(220, 38, 38, 0.55);
-	animation: web-swing-path 1.6s cubic-bezier(0.36, 0.07, 0.19, 0.97) forwards;
-}
-@keyframes web-swing-path {
-	0% {
-		top: -12%;
-		left: -8%;
-		transform: rotate(-25deg) scale(0.55);
-		opacity: 0;
-	}
-	15% {
-		opacity: 1;
-	}
-	50% {
-		top: 38%;
-		left: 46%;
-		transform: rotate(12deg) scale(1.05);
-	}
-	100% {
-		top: 106%;
-		left: 104%;
-		transform: rotate(35deg) scale(0.65);
-		opacity: 0;
-	}
-}
-.web-swing-line {
-	position: fixed;
-	z-index: 9997;
-	pointer-events: none;
-	top: -5%;
-	left: 6%;
-	width: 2px;
-	height: 55%;
-	background: linear-gradient(to bottom, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0));
-	transform-origin: top center;
-	animation: web-line-fade 1.6s ease-out forwards;
-}
-@keyframes web-line-fade {
-	0% {
-		opacity: 0;
-	}
-	20% {
-		opacity: 0.75;
-	}
-	70% {
-		opacity: 0.4;
-	}
-	100% {
-		opacity: 0;
-	}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(6, 182, 212, 0.6);
 }
 
-@media (prefers-reduced-motion: reduce) {
-	.spidey-sense:hover,
-	.spidey-sense:focus-visible,
-	.animate-spidey-pulse,
-	.web-shot,
-	.web-swing-figure,
-	.web-swing-line {
-		animation: none !important;
-	}
+html.dark ::-webkit-scrollbar-thumb {
+  background: rgba(51, 65, 85, 0.6);
 }
 
-/* ===================================================================== */
-/* SPIDER-MAN THEME — Web-Sling Scroll Rail                              */
-/* ===================================================================== */
-.web-scroll-rail {
-	position: fixed;
-	right: 18px;
-	top: 50%;
-	transform: translateY(-50%);
-	z-index: 60;
-	flex-direction: column;
-	align-items: center;
-	gap: 10px;
-	opacity: 0;
-	pointer-events: none;
-	transition: opacity 0.4s ease;
-}
-.web-scroll-rail-visible {
-	opacity: 1;
-	pointer-events: auto;
-}
-.web-scroll-track {
-	position: relative;
-	width: 3px;
-	height: 220px;
-	background: linear-gradient(to bottom, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02));
-	border-radius: 999px;
-}
-.web-scroll-fill {
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
-	background: linear-gradient(to bottom, #dc2626, #2563eb);
-	border-radius: 999px;
-	transition: height 0.1s linear;
-}
-.web-scroll-thwip {
-	position: absolute;
-	left: 50%;
-	width: 34px;
-	height: 34px;
-	transform: translate(-50%, -50%);
-	border-radius: 50%;
-	border: 2px solid rgba(255, 255, 255, 0.5);
-	overflow: hidden;
-	padding: 0;
-	cursor: pointer;
-	background: #050303;
-	box-shadow: 0 0 12px rgba(220, 38, 38, 0.5);
-	transition: top 0.1s linear, transform 0.2s ease;
-}
-.web-scroll-thwip:hover,
-.web-scroll-thwip:focus-visible {
-	transform: translate(-50%, -50%) scale(1.15);
-}
-.web-scroll-thwip img {
-	width: 100%;
-	height: 100%;
-	object-fit: cover;
-	display: block;
-}
-.web-scroll-pct {
-	font-size: 10px;
-	color: rgba(255, 255, 255, 0.45);
-	letter-spacing: 0.05em;
-}
-
-@media (prefers-reduced-motion: reduce) {
-	.web-scroll-thwip {
-		transition: none;
-	}
-}
-
-/* ===================================================================== */
-/* SPIDER-MAN THEME — Spidey Mode (toggle, web trail, crawling spider)   */
-/* ===================================================================== */
-.spidey-mode-btn {
-	position: fixed;
-	left: 18px;
-	bottom: 18px;
-	z-index: 70;
-	display: flex;
-	align-items: center;
-	gap: 8px;
-	padding: 6px 16px 6px 6px;
-	border-radius: 999px;
-	background: rgba(5, 3, 3, 0.75);
-	border: 1px solid rgba(220, 38, 38, 0.45);
-	backdrop-filter: blur(6px);
-	color: #f5f5f5;
-	font-size: 12px;
-	font-weight: 600;
-	letter-spacing: 0.02em;
-	box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4);
-	animation: spidey-btn-invite 2.4s ease-in-out infinite;
-}
-.spidey-mode-btn img {
-	width: 28px;
-	height: 28px;
-	border-radius: 50%;
-	object-fit: cover;
-	display: block;
-}
-.spidey-mode-btn-active {
-	border-color: rgba(37, 99, 235, 0.65);
-	background: linear-gradient(135deg, rgba(220, 38, 38, 0.3), rgba(37, 99, 235, 0.3));
-	animation: none;
-}
-@keyframes spidey-btn-invite {
-	0%,
-	100% {
-		box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.35);
-	}
-	50% {
-		box-shadow: 0 0 0 9px rgba(220, 38, 38, 0);
-	}
-}
-
-.web-trail-canvas {
-	position: fixed;
-	inset: 0;
-	z-index: 9996;
-	pointer-events: none;
-	width: 100vw;
-	height: 100vh;
-}
-
-.spidey-vignette {
-	position: fixed;
-	inset: 0;
-	z-index: 40;
-	pointer-events: none;
-	background: radial-gradient(ellipse at center, transparent 55%, rgba(220, 38, 38, 0.14) 100%);
-	animation: spidey-vignette-pulse 3.2s ease-in-out infinite;
-}
-@keyframes spidey-vignette-pulse {
-	0%,
-	100% {
-		opacity: 0.6;
-	}
-	50% {
-		opacity: 1;
-	}
-}
-
-.crawling-spider {
-	position: fixed;
-	top: 0;
-	left: -60px;
-	z-index: 65;
-	pointer-events: none;
-	animation: spider-walk 18s linear infinite;
-	filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.55));
-}
-@keyframes spider-walk {
-	0% {
-		left: -60px;
-		top: 0px;
-		transform: scaleX(1);
-	}
-	3% {
-		top: 34px;
-	}
-	6% {
-		top: 0px;
-	}
-	44% {
-		left: 46vw;
-		top: 0px;
-		transform: scaleX(1);
-	}
-	47% {
-		top: 30px;
-	}
-	50% {
-		left: 46vw;
-		top: 0px;
-		transform: scaleX(-1);
-	}
-	53% {
-		top: 30px;
-	}
-	94% {
-		left: -60px;
-		top: 0px;
-		transform: scaleX(-1);
-	}
-	97% {
-		top: 34px;
-	}
-	100% {
-		left: -60px;
-		top: 0px;
-		transform: scaleX(1);
-	}
-}
-
-@media (prefers-reduced-motion: reduce) {
-	.spidey-mode-btn {
-		animation: none;
-	}
-	.spidey-vignette,
-	.crawling-spider {
-		animation: none;
-		display: none;
-	}
-}
-
-@media (max-width: 640px) {
-	.spidey-mode-btn span {
-		display: none;
-	}
-	.spidey-mode-btn {
-		padding: 6px;
-	}
-}
-
-/* ===================================================================== */
-/* SPIDER-MAN THEME — Villain Catch mini-game                            */
-/* ===================================================================== */
-.spidey-hint {
-	position: fixed;
-	top: 80px;
-	left: 50%;
-	z-index: 80;
-	background: rgba(5, 3, 3, 0.88);
-	border: 1px solid rgba(220, 38, 38, 0.45);
-	color: #fff;
-	padding: 9px 18px;
-	border-radius: 999px;
-	font-size: 13px;
-	font-weight: 600;
-	box-shadow: 0 4px 22px rgba(0, 0, 0, 0.45);
-	pointer-events: none;
-	text-align: center;
-	max-width: 92vw;
-	animation: spidey-hint-in 0.35s ease-out both, spidey-hint-out 0.4s ease-in 3.8s forwards;
-}
-@keyframes spidey-hint-in {
-	from {
-		opacity: 0;
-		transform: translate(-50%, -8px);
-	}
-	to {
-		opacity: 1;
-		transform: translate(-50%, 0);
-	}
-}
-@keyframes spidey-hint-out {
-	to {
-		opacity: 0;
-		transform: translate(-50%, -8px);
-	}
-}
-
-.villain-score {
-	position: fixed;
-	left: 18px;
-	bottom: 62px;
-	z-index: 70;
-	padding: 5px 14px;
-	border-radius: 999px;
-	background: rgba(5, 3, 3, 0.75);
-	border: 1px solid rgba(220, 38, 38, 0.4);
-	color: #fff;
-	font-size: 12px;
-	font-weight: 700;
-	letter-spacing: 0.02em;
-}
-
-.villain {
-	position: fixed;
-	z-index: 9995;
-	width: 52px;
-	height: 52px;
-	padding: 0;
-	border: none;
-	background: transparent;
-	transform: translate(-50%, -50%);
-	animation: villain-appear 0.25s ease-out both, villain-bob 1.3s ease-in-out 0.25s infinite;
-	filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.5));
-}
-.villain:hover {
-	filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.5)) drop-shadow(0 0 10px rgba(220, 38, 38, 0.6));
-}
-@keyframes villain-appear {
-	from {
-		transform: translate(-50%, -50%) scale(0);
-		opacity: 0;
-	}
-	to {
-		transform: translate(-50%, -50%) scale(1);
-		opacity: 1;
-	}
-}
-@keyframes villain-bob {
-	0%,
-	100% {
-		transform: translate(-50%, -50%) translateY(0);
-	}
-	50% {
-		transform: translate(-50%, -50%) translateY(-6px);
-	}
-}
-.villain-caught {
-	animation: villain-caught-pop 0.42s ease-in forwards !important;
-	pointer-events: none;
-}
-@keyframes villain-caught-pop {
-	0% {
-		transform: translate(-50%, -50%) scale(1) rotate(0deg);
-		opacity: 1;
-	}
-	40% {
-		transform: translate(-50%, -50%) scale(1.3) rotate(18deg);
-		filter: drop-shadow(0 0 16px rgba(220, 38, 38, 0.85));
-	}
-	100% {
-		transform: translate(-50%, -50%) scale(0.15) rotate(50deg);
-		opacity: 0;
-	}
-}
-
-.villain-timer {
-	position: absolute;
-	left: 50%;
-	bottom: -9px;
-	transform: translateX(-50%);
-	width: 38px;
-	height: 4px;
-	border-radius: 999px;
-	background: rgba(255, 255, 255, 0.15);
-	overflow: hidden;
-	display: block;
-}
-.villain-timer-fill {
-	display: block;
-	height: 100%;
-	width: 100%;
-	background: linear-gradient(to right, #dc2626, #2563eb);
-	transform-origin: left center;
-	animation: villain-timer-shrink linear forwards;
-	animation-duration: var(--life, 4200ms);
-}
-@keyframes villain-timer-shrink {
-	from {
-		transform: scaleX(1);
-	}
-	to {
-		transform: scaleX(0);
-	}
-}
-
-.villain-pop {
-	position: fixed;
-	z-index: 9997;
-	transform: translate(-50%, -100%);
-	color: #fbbf24;
-	font-weight: 700;
-	font-size: 13px;
-	text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
-	pointer-events: none;
-	animation: villain-pop-float 0.7s ease-out forwards;
-	white-space: nowrap;
-}
-@keyframes villain-pop-float {
-	0% {
-		opacity: 0;
-		transform: translate(-50%, -100%) scale(0.8);
-	}
-	30% {
-		opacity: 1;
-		transform: translate(-50%, -140%) scale(1.05);
-	}
-	100% {
-		opacity: 0;
-		transform: translate(-50%, -200%) scale(1);
-	}
-}
-
-@media (prefers-reduced-motion: reduce) {
-	.villain,
-	.villain-caught,
-	.villain-timer-fill,
-	.spidey-hint {
-		animation: none;
-	}
+html.dark ::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 240, 255, 0.6);
 }

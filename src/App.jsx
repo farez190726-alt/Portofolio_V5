@@ -8,10 +8,7 @@ import About from "./Pages/About";
 import AnimatedBackground from "./components/Background";
 import { AnimatePresence } from "framer-motion";
 import Footer from "./components/Footer";
-import WebShooterCursor from "./components/WebShooterCursor";
-import WebSwingEasterEgg from "./components/WebSwingEasterEgg";
-import ScrollWebSwing from "./components/ScrollWebSwing";
-import SpideyModeToggle from "./components/SpideyModeToggle";
+import { ThemeProvider } from "./context/ThemeContext";
 
 import Login from "./Pages/Login";
 import Dashboard from "./Pages/Dashboard";
@@ -36,9 +33,8 @@ const LandingPage = ({ showWelcome, setShowWelcome }) => {
       </AnimatePresence>
 
       {!showWelcome && (
-        <>
+        <div className="relative z-10">
           <Navbar />
-          <ScrollWebSwing />
           <Home />
           <About />
           <Suspense fallback={<div className="h-20" />}>
@@ -46,81 +42,80 @@ const LandingPage = ({ showWelcome, setShowWelcome }) => {
             <ContactPage />
           </Suspense>
           <Footer />
-        </>
+        </div>
       )}
     </>
   );
 };
 
 const ProjectPageLayout = () => (
-  <>
+  <div className="relative z-10">
+    <Navbar />
     <Suspense fallback={<div className="min-h-screen" />}>
       <ProjectDetails />
     </Suspense>
     <Footer />
-  </>
+  </div>
 );
 
 function App() {
-  const [showWelcome, setShowWelcome] = useState(true);
+  const [showWelcome, setShowWelcome] = useState(false);
 
   return (
-    
-    <HelmetProvider>
-      <div className="pointer-events-none">
-  <AnimatedBackground />
-</div>
-      <WebShooterCursor />
-      <WebSwingEasterEgg />
-      <SpideyModeToggle />
-      <BrowserRouter>
-        <Routes>
-          {/* PUBLIC */}
-          <Route
-            path="/"
-            element={
-              <LandingPage
-                showWelcome={showWelcome}
-                setShowWelcome={setShowWelcome}
+    <ThemeProvider>
+      <HelmetProvider>
+        <div className="relative min-h-screen overflow-x-hidden selection:bg-cyan-500/20 selection:text-cyan-700 dark:selection:bg-cyan-400/20 dark:selection:text-cyan-300">
+          <AnimatedBackground />
+          <BrowserRouter>
+            <Routes>
+              {/* PUBLIC */}
+              <Route
+                path="/"
+                element={
+                  <LandingPage
+                    showWelcome={showWelcome}
+                    setShowWelcome={setShowWelcome}
+                  />
+                }
               />
-            }
-          />
 
-          <Route path="/project/:slug" element={<ProjectPageLayout />} />
-          <Route
-            path="/wallet"
-            element={
-              <Suspense fallback={<div className="min-h-screen bg-slate-100" />}>
-                <WalletApp />
-              </Suspense>
-            }
-          />
+              <Route path="/project/:slug" element={<ProjectPageLayout />} />
+              <Route
+                path="/wallet"
+                element={
+                  <Suspense fallback={<div className="min-h-screen bg-slate-100" />}>
+                    <WalletApp />
+                  </Suspense>
+                }
+              />
 
-          {/* AUTH */}
-          <Route path="/login" element={<Login />} />
+              {/* AUTH */}
+              <Route path="/login" element={<Login />} />
 
-          {/* ADMIN (PROTECTED) */}
-          <Route
-            path="/dashboard/*"
-            element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            }
-          />
+              {/* ADMIN (PROTECTED) */}
+              <Route
+                path="/dashboard/*"
+                element={
+                  <ProtectedRoute>
+                    <Dashboard />
+                  </ProtectedRoute>
+                }
+              />
 
-          {/* 404 */}
-          <Route
-            path="*"
-            element={
-              <Suspense fallback={null}>
-                <NotFoundPage />
-              </Suspense>
-            }
-          />
-        </Routes>
-      </BrowserRouter>
-    </HelmetProvider>
+              {/* 404 */}
+              <Route
+                path="*"
+                element={
+                  <Suspense fallback={null}>
+                    <NotFoundPage />
+                  </Suspense>
+                }
+              />
+            </Routes>
+          </BrowserRouter>
+        </div>
+      </HelmetProvider>
+    </ThemeProvider>
   );
 }
 
